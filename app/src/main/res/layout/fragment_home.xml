@@ -3,12 +3,92 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_grey"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Ui.Fragments.HomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_margin="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/userName"
+                        android:text="Hello Shubham"
+                        android:fontFamily="@font/popins"
+                        android:includeFontPadding="false"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_width="match_parent"
+                        android:textColor="@color/black"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="marquee"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:singleLine="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:scrollHorizontally="true" />
+
+                    <TextView
+                        android:includeFontPadding="false"
+                        android:id="@+id/timeMsg"
+                        android:text="Good Morning"
+                        android:fontFamily="@font/popins"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_below="@id/userName"
+                        android:layout_width="match_parent"
+                        android:textColor="@color/black"
+                        android:layout_height="wrap_content"
+                        />
+
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:id="@+id/notificationRecycler"
+                    tools:listitem="@layout/notification_recycler_item"
+                    tools:itemCount="3"
+                    android:layout_height="wrap_content"/>
+
+
+
+                <TextView
+                    android:includeFontPadding="false"
+                    android:text="Family Members"
+                    android:fontFamily="@font/popins"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_below="@id/userName"
+                    android:layout_width="match_parent"
+                    android:layout_margin="15dp"
+                    android:textColor="@color/darkergrey"
+                    android:layout_height="wrap_content"
+                    />
+
+
+
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
