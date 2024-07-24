@@ -169,7 +169,7 @@ class LoginActivity : AppCompatActivity() {
         super.onResume()
         auth = FirebaseAuth.getInstance()
         if (auth.currentUser != null) {
-//             startActivity(Intent(this, DashboardActivity::class.java))
+             startActivity(Intent(this, DashboardActivity::class.java))
         }
     }
 
