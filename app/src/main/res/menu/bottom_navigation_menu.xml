@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/home"
+        android:enabled="true"
+        android:icon="@drawable/home"
+        app:showAsAction="ifRoom"
+        android:title="Home"/>
+    <item
+        android:id="@+id/map"
+        app:showAsAction="ifRoom"
+        android:enabled="true"
+        android:icon="@drawable/familymap"
+        android:title="Family Map"/>
+    <item
+        android:id="@+id/profile"
+        android:enabled="true"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/profile"
+        android:title="Profile"/>
+</menu>
