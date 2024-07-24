@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">EmergencyApplication</string>
+    <string name="singUpsuccessSubtitle">Your account has been successfully created</string>
+    <string name="logininSuccessSubtitle">Successfully logged in</string>
+</resources>

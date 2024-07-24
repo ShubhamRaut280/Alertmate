@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "176925401297",
+    "project_id": "accidentdetection-69ea1",
+    "storage_bucket": "accidentdetection-69ea1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:176925401297:android:91a871cb78c7edf2f2e5f0",
+        "android_client_info": {
+          "package_name": "com.shubham.emergencyapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBYs5-4Mz50q-vLvWYyMiJj_BTM3bkulc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
