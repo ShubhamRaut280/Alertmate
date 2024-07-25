@@ -3,6 +3,8 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:paddingBottom="60dp"
+    android:paddingTop="20dp"
     android:layout_height="match_parent">
     <TextView
         android:id="@+id/title"
@@ -17,7 +19,7 @@
         android:text="Add a family member"/>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/nickName"
+        android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -106,18 +108,19 @@
             android:includeFontPadding="false"
             android:text="Add member"
             android:textSize="18sp"
+            android:textColor="@color/white"
             android:textStyle="bold"
             app:cornerRadius="20dp"
             app:backgroundTint="@color/main" />
 
-        <!-- ProgressBar -->
         <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
+
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_gravity="center"
-            android:visibility="gone"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:indeterminateTint="@color/white" />
+            android:indeterminateTint="@color/white"
+            android:paddingTop="2dp"
+            android:visibility="gone" />
     </FrameLayout>
 </LinearLayout>

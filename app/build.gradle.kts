@@ -59,4 +59,5 @@ dependencies {
     implementation(libs.circleimageview)
     implementation(libs.glide)
     implementation(libs.androidx.viewpager2)
+    implementation("com.google.code.gson:gson:2.10.1")
 }

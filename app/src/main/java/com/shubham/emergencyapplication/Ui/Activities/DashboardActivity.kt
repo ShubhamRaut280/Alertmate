@@ -10,7 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.shubham.emergencyapplication.BottomSheets.DialogUtils.showSosBottomSheetDialog
 import com.shubham.emergencyapplication.R
+import com.shubham.emergencyapplication.Repositories.FamilyRepository.saveFamilyMembers
 import com.shubham.emergencyapplication.Ui.Fragments.HomeFragment
 import com.shubham.emergencyapplication.Ui.Fragments.MapFragment
 import com.shubham.emergencyapplication.Ui.Fragments.ProfileFragment
@@ -43,7 +45,13 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun init() {
+        saveFamilyMembers(this)
+
         makeViewDraggable(binding.addPerson)
+
+        binding.addPerson.setOnClickListener {
+            showSosBottomSheetDialog(this, supportFragmentManager)
+        }
         window.statusBarColor = resources.getColor(R.color.main)
 
         setupViewPager()

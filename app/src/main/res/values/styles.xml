@@ -9,5 +9,8 @@
         <item name="colorSurface">@color/main</item>
         <item name="colorOnSurfaceVariant">@color/grey</item>
     </style>
-
+    <style name="BottomSheetAnimation" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:windowEnterAnimation">@anim/slide_up</item>
+        <item name="android:windowExitAnimation">@anim/slide_down</item>
+    </style>
 </resources>
