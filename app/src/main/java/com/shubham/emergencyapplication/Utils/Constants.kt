@@ -10,4 +10,6 @@ object Constants {
     const val FAMILY_MEM = "family_members"
     const val FAMILY_SHARED_PREF   = "FAMILY_SHARED_PREF"
     const val USER_SHARED_PREF   = "USER_SHARED_PREF"
+
+    const val LOCATION_REF = "LocationsUpdates"
 }

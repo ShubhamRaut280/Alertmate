@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" tools:ignore="background-location-access"/>
 
     <application
         android:name=".MyApplication"
@@ -13,6 +16,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EmergencyApplication"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDN073M2fDogpzE8Aa4PLIfkAeCbCOpCX4" />
+
         <activity
             android:name=".Ui.Activities.DashboardActivity"
             android:exported="false" />

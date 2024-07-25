@@ -1,22 +1,39 @@
 package com.shubham.emergencyapplication.Ui.Activities
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Location
+import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.view.Menu
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.shubham.emergencyapplication.BottomSheets.DialogUtils.showSosBottomSheetDialog
 import com.shubham.emergencyapplication.BottomSheets.showUpdateDetailsBottomSheet
 import com.shubham.emergencyapplication.Dialogs.DialogUtils.showUpdateDetailsDialog
 import com.shubham.emergencyapplication.R
+import com.shubham.emergencyapplication.Repositories.UserRepository.addLocationToDb
 import com.shubham.emergencyapplication.Repositories.UserRepository.saveFamilyMembers
 import com.shubham.emergencyapplication.SharedPref.UserDataSharedPref.isProfileUpdated
 import com.shubham.emergencyapplication.Ui.Fragments.HomeFragment
@@ -28,6 +45,10 @@ import com.shubham.emergencyapplication.databinding.ActivityDashboardBinding
 
 class DashboardActivity : AppCompatActivity() {
 
+    private val LOCATION_REQUEST_CODE = 1
+    private val BACKGROUND_LOCATION_REQUEST_CODE = 2
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationCallback: LocationCallback
     private lateinit var binding: ActivityDashboardBinding
     private lateinit var viewPager: ViewPager2
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -47,8 +68,20 @@ class DashboardActivity : AppCompatActivity() {
             insets
         }
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         init()
+
+        requestLocationPermissions()
+
     }
+
+    private val locationRequest = LocationRequest.create().apply {
+        interval = 4000
+        fastestInterval = 2000
+        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+    }
+
+
 
     private fun init() {
 
@@ -118,5 +151,67 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
     }
+    private fun requestLocationPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_REQUEST_CODE)
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION), BACKGROUND_LOCATION_REQUEST_CODE)
+        } else {
+            startLocationUpdates()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            LOCATION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startLocationUpdates()
+                }
+            }
+            BACKGROUND_LOCATION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Handle background location permission granted
+                }
+            }
+        }
+    }
+
+    private fun startLocationUpdates() {
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                super.onLocationResult(locationResult)
+                locationResult?.let {
+                    for (location in it.locations) {
+                        saveLocation(location)
+                    }
+                }
+            }
+        }
+
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+    }
+
+    private fun saveLocation(location: Location?) {
+        if (location!=null){
+            val latitude = location.latitude
+            val longitude = location.longitude
+            addLocationToDb(this@DashboardActivity, latitude, longitude)
+
+        }
+    }
+
+    private fun stopLocationUpdates() {
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+    }
+
+
 
 }
