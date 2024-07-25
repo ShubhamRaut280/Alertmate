@@ -71,6 +71,20 @@ object UserRepository {
 
         }
     }
+    fun checkIfUserExist(email : String, context: Context, callBack: ResponseCallBack<String>){
+            db.collection(USERS_COLLECTION)
+                .whereEqualTo("email", email)
+                .get()
+                .addOnSuccessListener {
+                    if(it.isEmpty){
+                        callBack.onSuccess("")
+                    }else{
+                        callBack.onSuccess(it.documents[0].id)
+                    }
+                }
+
+
+    }
 
     fun setUserInfo(context: Context, map: Map<String, Any>,callBack: ResponseCallBack<String>){
         val userId = auth.currentUser?.uid

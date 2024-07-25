@@ -5,6 +5,8 @@ import com.google.firebase.auth.FirebaseAuth
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -60,7 +62,13 @@ fun showUpdateDetailsBottomSheet(context: Activity, auth: FirebaseAuth) {
                     // Handle error
                 }
             })
-
+            email.editText?.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    email.error = null
+                }
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            })
             // Handle confirm button click
             confirm.setOnClickListener { v: View? ->
                 handleSubmit(email, name, phone, progress, confirm, context, bottomSheetDialog)

@@ -14,40 +14,19 @@
         android:fontFamily="@font/popins"
         android:textSize="22dp"
         android:textColor="@color/black"
+        android:layout_marginBottom="10dp"
         android:textStyle="bold"
         android:layout_marginTop="20dp"
         android:text="Add a family member"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:hint="Enter name"
-        app:boxCornerRadiusBottomEnd="25dp"
-        app:boxCornerRadiusBottomStart="25dp"
-        app:boxCornerRadiusTopEnd="25dp"
-        app:boxCornerRadiusTopStart="25dp"
-        app:boxStrokeColor="@color/grey"
-        app:endIconMode="clear_text"
-        app:endIconTint="@color/grey"
-        app:errorEnabled="true"
-        app:startIconTint="@color/grey">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/popins"
-            android:inputType="textEmailAddress" />
-
-    </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
+        android:layout_marginBottom="10dp"
         android:hint="Enter email"
         app:boxCornerRadiusBottomEnd="25dp"
         app:boxCornerRadiusBottomStart="25dp"
@@ -62,36 +41,13 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
+            android:includeFontPadding="false"
             android:layout_height="wrap_content"
             android:fontFamily="@font/popins"
             android:inputType="textEmailAddress" />
 
     </com.google.android.material.textfield.TextInputLayout>
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/phone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:hint="Enter phone"
-        app:boxCornerRadiusBottomEnd="25dp"
-        app:boxCornerRadiusBottomStart="25dp"
-        app:boxCornerRadiusTopEnd="25dp"
-        app:boxCornerRadiusTopStart="25dp"
-        app:boxStrokeColor="@color/grey"
-        app:endIconMode="clear_text"
-        app:endIconTint="@color/grey"
-        app:errorEnabled="true"
-        app:startIconDrawable="@android:drawable/stat_sys_phone_call"
-        app:startIconTint="@color/grey">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/popins"
-            android:inputType="phone" />
-
-    </com.google.android.material.textfield.TextInputLayout>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
