@@ -2,6 +2,8 @@ package com.shubham.emergencyapplication.Ui.Activities
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -49,6 +51,8 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun init() {
+
+
         if(!isProfileUpdated(this)){
             showUpdateDetailsBottomSheet(this, FirebaseAuth.getInstance())
         }
@@ -63,8 +67,7 @@ class DashboardActivity : AppCompatActivity() {
 
         setupViewPager()
         setupBottomNavigation()
-
-        handleAdjustResizeForKeyboard(binding.root)
+        window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
     }
 
     private fun setupViewPager() {

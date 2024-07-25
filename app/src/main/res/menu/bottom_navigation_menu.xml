@@ -16,6 +16,6 @@
         android:id="@+id/profile"
         android:enabled="true"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/profile"
+        android:icon="@drawable/user"
         android:title="Profile"/>
 </menu>

@@ -28,6 +28,7 @@ object UtilityFuns {
                 keyboardHeight - threshold/2
             )
         }
+
     }
     fun handleAdjustResizeForKeyboard(rootView: ConstraintLayout) {
         rootView.viewTreeObserver.addOnGlobalLayoutListener {
