@@ -25,6 +25,7 @@ class MemberAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         holder.nameTextView.text = item.name
+        holder.nameTextView.isSelected = true
         if(!item.image_url.isNullOrEmpty()){
             Glide.with(context).load(item.image_url).into(holder.photoImageView)
         }
