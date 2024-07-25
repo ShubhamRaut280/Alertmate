@@ -14,6 +14,8 @@ import com.shubham.emergencyapplication.R
 import com.shubham.emergencyapplication.Ui.Fragments.HomeFragment
 import com.shubham.emergencyapplication.Ui.Fragments.MapFragment
 import com.shubham.emergencyapplication.Ui.Fragments.ProfileFragment
+import com.shubham.emergencyapplication.Utils.DraggableUtils.makeViewDraggable
+import com.shubham.emergencyapplication.Utils.UtilityFuns.handleAdjustResizeForKeyboard
 import com.shubham.emergencyapplication.databinding.ActivityDashboardBinding
 
 class DashboardActivity : AppCompatActivity() {
@@ -37,8 +39,17 @@ class DashboardActivity : AppCompatActivity() {
             insets
         }
 
+        init()
+    }
+
+    private fun init() {
+        makeViewDraggable(binding.addPerson)
+        window.statusBarColor = resources.getColor(R.color.main)
+
         setupViewPager()
         setupBottomNavigation()
+
+        handleAdjustResizeForKeyboard(binding.root)
     }
 
     private fun setupViewPager() {
@@ -89,4 +100,5 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
     }
+
 }

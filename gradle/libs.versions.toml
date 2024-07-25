@@ -27,6 +27,7 @@ lifecycleViewmodelAndroid = "2.8.4"
 mpandroidchart = "v3.1.0"
 uiAndroid = "1.6.8"
 viewpager2 = "1.1.0"
+firebaseFirestore = "25.0.0"
 
 [libraries]
 android-image-cropper = { module = "com.theartofdev.edmodo:android-image-cropper", version.ref = "androidImageCropper" }
@@ -54,6 +55,7 @@ firebase-database-ktx = { group = "com.google.firebase", name = "firebase-databa
 androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroid" }
 mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 androidx-ui-android = { group = "androidx.compose.ui", name = "ui-android", version.ref = "uiAndroid" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
