@@ -10,9 +10,13 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.shubham.emergencyapplication.BottomSheets.DialogUtils.showSosBottomSheetDialog
+import com.shubham.emergencyapplication.BottomSheets.showUpdateDetailsBottomSheet
+import com.shubham.emergencyapplication.Dialogs.DialogUtils.showUpdateDetailsDialog
 import com.shubham.emergencyapplication.R
-import com.shubham.emergencyapplication.Repositories.FamilyRepository.saveFamilyMembers
+import com.shubham.emergencyapplication.Repositories.UserRepository.saveFamilyMembers
+import com.shubham.emergencyapplication.SharedPref.UserDataSharedPref.isProfileUpdated
 import com.shubham.emergencyapplication.Ui.Fragments.HomeFragment
 import com.shubham.emergencyapplication.Ui.Fragments.MapFragment
 import com.shubham.emergencyapplication.Ui.Fragments.ProfileFragment
@@ -45,6 +49,9 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun init() {
+        if(!isProfileUpdated(this)){
+            showUpdateDetailsBottomSheet(this, FirebaseAuth.getInstance())
+        }
         saveFamilyMembers(this)
 
         makeViewDraggable(binding.addPerson)

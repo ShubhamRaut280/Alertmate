@@ -1,6 +1,6 @@
 package com.shubham.emergencyapplication.Callbacks
 
-interface ResponseCallBack {
-    fun onSuccess(response: Any)
+interface ResponseCallBack<T> {
+    fun onSuccess(response: T?)
     fun onError(error: String?)
 }

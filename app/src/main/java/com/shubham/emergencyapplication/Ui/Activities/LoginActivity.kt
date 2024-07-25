@@ -1,6 +1,7 @@
 package com.shubham.emergencyapplication.Ui.Activities
 
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -20,9 +21,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View.TEXT_ALIGNMENT_CENTER
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textview.MaterialTextView
+import com.shubham.emergencyapplication.Dialogs.DialogUtils.showUpdateDetailsDialog
 
 class LoginActivity : AppCompatActivity() {
 
@@ -196,14 +200,14 @@ class LoginActivity : AppCompatActivity() {
             confirm.setOnClickListener { v: View? ->
                 startActivity(Intent(this, DashboardActivity::class.java))
                 dialogToCreateAlert.dismiss()
+
             }
             dialogToCreateAlert.show()
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
-    fun showSigninsuccess()
-    {
+    fun showSigninsuccess() {
         try {
             val dialogToCreateAlert = Dialog(this)
             dialogToCreateAlert.setContentView(R.layout.success_dialog)
@@ -237,5 +241,7 @@ class LoginActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
+
+
 
 }

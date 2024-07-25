@@ -5,15 +5,13 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.getField
-import com.google.firebase.firestore.ktx.getField
 import com.shubham.emergencyapplication.Callbacks.ResponseCallBack
-import com.shubham.emergencyapplication.Models.FamilyMember
+import com.shubham.emergencyapplication.Models.User
 import com.shubham.emergencyapplication.SharedPref.FamilySharedPref.setFamilyMemList
 import com.shubham.emergencyapplication.Utils.Constants.FAMILY_MEM
 import com.shubham.emergencyapplication.Utils.Constants.USERS_COLLECTION
 
-object FamilyRepository {
+object UserRepository {
     private val db : FirebaseFirestore  = FirebaseFirestore.getInstance()
     private val auth : FirebaseAuth = FirebaseAuth.getInstance()
 
@@ -50,4 +48,42 @@ object FamilyRepository {
         familyMembersListener?.remove()
     }
 
+    fun getUserInfo(context: Context, callBack: ResponseCallBack<User>){
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            db.collection(USERS_COLLECTION)
+                .document(userId)
+                .get()
+                .addOnSuccessListener {
+                    var userInfo = User(
+                        it.getString("name"),
+                        it.getString("email"),
+                        it.getLong("phone") ,
+                        it.id,
+                        it.getString("image_url"),
+                        it.get("family_members") as List<String>?
+                    )
+                    callBack.onSuccess(userInfo)
+                }
+                .addOnFailureListener {
+                    callBack.onError(it.message)
+                }
+
+        }
+    }
+
+    fun setUserInfo(context: Context, map: Map<String, Any>,callBack: ResponseCallBack<String>){
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            db.collection(USERS_COLLECTION)
+                .document(userId)
+                .set(map, com.google.firebase.firestore.SetOptions.merge())
+                .addOnSuccessListener {
+                    callBack.onSuccess("Details Updated Successfully")
+                }.addOnFailureListener {
+                    callBack.onError(it.message)
+                }
+
+        }
+    }
 }
