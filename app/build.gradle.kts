@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
+    implementation(libs.firebase.database.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -61,7 +62,9 @@ dependencies {
     implementation(libs.circleimageview)
     implementation(libs.glide)
     implementation(libs.androidx.viewpager2)
-    implementation("com.google.code.gson:gson:2.10.1")
-    implementation("com.google.firebase:firebase-database")
+    implementation(libs.gson)
+    implementation(libs.firebase.database)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
 
 }

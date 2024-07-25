@@ -2,6 +2,7 @@ package com.shubham.emergencyapplication.Repositories
 
 import android.content.Context
 import android.util.Log
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -28,23 +29,76 @@ object UserRepository {
 
     private var familyMembersListener: ListenerRegistration? = null
 
-    fun saveFamilyMembers(context: Context) {
+    fun getFamilyMembers(context: Context, callback: ResponseCallBack<List<User>>) {
         val userId = auth.currentUser?.uid
         if (userId != null) {
+            // Remove any existing listener
             familyMembersListener?.remove()
 
+            // Listen for changes in the user's family members list
             familyMembersListener = db.collection(USERS_COLLECTION)
                 .document(userId)
                 .addSnapshotListener { snapshot, exception ->
                     if (exception != null) {
+                        Log.d(TAG, "Error fetching family members list: $exception")
                         return@addSnapshotListener
                     }
 
                     if (snapshot != null && snapshot.exists()) {
-                        val familyMembers = snapshot.get(FAMILY_MEM) as List<String>?
-                        setFamilyMemList(context, FAMILY_MEM, familyMembers ?: emptyList())
+                        val familyMembers = snapshot.get(FAMILY_MEM) as List<String>? ?: listOf()
+
+                        // Fetch the user documents only once
+                        fetchUserDocuments(familyMembers, callback)
+
+                        // Set up continuous listeners for each user document
+                        setupUserDocumentListeners(familyMembers, callback)
                     }
                 }
+        }
+    }
+
+    private fun fetchUserDocuments(familyMembers: List<String>, callback: ResponseCallBack<List<User>>) {
+        val userRefs = familyMembers.map { db.collection(USERS_COLLECTION).document(it) }
+        val users = mutableListOf<User>()
+
+        val tasks = userRefs.map { userRef ->
+            userRef.get().continueWith { task ->
+                val snapshot = task.result
+                val user = snapshot?.toObject(User::class.java)
+                user?.let { users.add(it) }
+            }
+        }
+
+        Tasks.whenAllComplete(tasks).addOnCompleteListener {
+            callback.onSuccess(users)
+        }.addOnFailureListener {
+            callback.onError(it.message)
+        }
+    }
+
+    private fun setupUserDocumentListeners(familyMembers: List<String>, callback: ResponseCallBack<List<User>>) {
+        val userRefs = familyMembers.map { db.collection(USERS_COLLECTION).document(it) }
+        val users = mutableListOf<User>()
+
+        userRefs.forEach { userRef ->
+            userRef.addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.d(TAG, "Error fetching user: $error")
+                    return@addSnapshotListener
+                }
+
+                val updatedUser = snapshot?.toObject(User::class.java)
+                updatedUser?.let {
+                    val index = users.indexOfFirst { user -> user.id == it.id }
+                    if (index != -1) {
+                        users[index] = it
+                    } else {
+                        users.add(it)
+                    }
+                    Log.d(TAG, "Updated user: $it")
+                    callback.onSuccess(users)
+                }
+            }
         }
     }
 
@@ -114,41 +168,41 @@ object UserRepository {
 
     }
 
-    fun getFamilyMembers(context: Context, callBack: ResponseCallBack<List<User>>) {
-        val members: List<String>? = getFamilyMemList(context, FAMILY_MEM)
-        if (members.isNullOrEmpty()) {
-            callBack.onSuccess(emptyList())
-            return
-        }
-
-        val users = mutableListOf<User>()
-        val latch = CountDownLatch(members.size)
-
-        for (member in members) {
-            getSpecificUserInfo(context, member, object : ResponseCallBack<User> {
-                override fun onSuccess(response: User?) {
-                    response?.let { users.add(it) }
-                    latch.countDown()
-                }
-
-                override fun onError(error: String?) {
-                    Log.d(TAG, "onError: $error")
-                    latch.countDown()
-                }
-            })
-        }
-
-        // Wait for the latch to count down to zero or timeout after 30 seconds
-        Thread {
-            try {
-                latch.await(30, TimeUnit.SECONDS)
-                callBack.onSuccess(users)
-            } catch (e: InterruptedException) {
-                Log.d(TAG, "InterruptedException: ${e.message}")
-                callBack.onError("Failed to fetch all user details.")
-            }
-        }.start()
-    }
+//    fun getFamilyMembers(context: Context, callBack: ResponseCallBack<List<User>>) {
+//        val members: List<String>? = getFamilyMemList(context, FAMILY_MEM)
+//        if (members.isNullOrEmpty()) {
+//            callBack.onSuccess(emptyList())
+//            return
+//        }
+//
+//        val users = mutableListOf<User>()
+//        val latch = CountDownLatch(members.size)
+//
+//        for (member in members) {
+//            getSpecificUserInfo(context, member, object : ResponseCallBack<User> {
+//                override fun onSuccess(response: User?) {
+//                    response?.let { users.add(it) }
+//                    latch.countDown()
+//                }
+//
+//                override fun onError(error: String?) {
+//                    Log.d(TAG, "onError: $error")
+//                    latch.countDown()
+//                }
+//            })
+//        }
+//
+//        // Wait for the latch to count down to zero or timeout after 30 seconds
+//        Thread {
+//            try {
+//                latch.await(30, TimeUnit.SECONDS)
+//                callBack.onSuccess(users)
+//            } catch (e: InterruptedException) {
+//                Log.d(TAG, "InterruptedException: ${e.message}")
+//                callBack.onError("Failed to fetch all user details.")
+//            }
+//        }.start()
+//    }
 
     fun setUserInfo(context: Context, map: Map<String, Any>,callBack: ResponseCallBack<String>){
         val userId = auth.currentUser?.uid

@@ -9,6 +9,7 @@ import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import android.view.Menu
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -34,7 +35,6 @@ import com.shubham.emergencyapplication.BottomSheets.showUpdateDetailsBottomShee
 import com.shubham.emergencyapplication.Dialogs.DialogUtils.showUpdateDetailsDialog
 import com.shubham.emergencyapplication.R
 import com.shubham.emergencyapplication.Repositories.UserRepository.addLocationToDb
-import com.shubham.emergencyapplication.Repositories.UserRepository.saveFamilyMembers
 import com.shubham.emergencyapplication.SharedPref.UserDataSharedPref.isProfileUpdated
 import com.shubham.emergencyapplication.Ui.Fragments.HomeFragment
 import com.shubham.emergencyapplication.Ui.Fragments.MapFragment
@@ -89,7 +89,6 @@ class DashboardActivity : AppCompatActivity() {
         if(!isProfileUpdated(this)){
             showUpdateDetailsBottomSheet(this, FirebaseAuth.getInstance())
         }
-        saveFamilyMembers(this)
 
         makeViewDraggable(binding.addPerson)
 
@@ -196,7 +195,21 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
 
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        try {
+            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+        } catch (e: Exception) {
+            Log.e("DashboardActivity", "Error starting location updates", e)
+        }
     }
 
     private fun saveLocation(location: Location?) {

@@ -3,18 +3,33 @@ package com.shubham.emergencyapplication.Ui.Fragments
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import androidx.activity.viewModels
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.shubham.emergencyapplication.Adapters.HomeNotificationAdapter
+import com.shubham.emergencyapplication.Adapters.MemberAdapter
+import com.shubham.emergencyapplication.Callbacks.ResponseCallBack
+import com.shubham.emergencyapplication.Models.User
 import com.shubham.emergencyapplication.R
+import com.shubham.emergencyapplication.Repositories.UserRepository.getFamilyMembers
+import com.shubham.emergencyapplication.ViewModels.HomeFragmentViewModel
 import com.shubham.emergencyapplication.databinding.ActivityDashboardBinding
 import com.shubham.emergencyapplication.databinding.FragmentHomeBinding
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 
 class HomeFragment : Fragment() {
     lateinit var binding: FragmentHomeBinding
+
+    private lateinit var viewModel: HomeFragmentViewModel
+    private lateinit var adapter: MemberAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,9 +44,24 @@ class HomeFragment : Fragment() {
     }
 
     private fun init(){
+        viewModel = ViewModelProvider(this).get(HomeFragmentViewModel::class.java)
 
         val notifications = listOf("Please give location permission", "please give camera permsission")
         setupNotificationRecycler(notifications)
+        setUpMemberRecycler()
+    }
+
+    fun setUpMemberRecycler(){
+
+        binding.memberRecycler.layoutManager = GridLayoutManager(requireContext(), 4) // 2 columns
+        adapter = MemberAdapter(requireContext())
+        binding.memberRecycler.adapter = adapter
+
+        viewModel.data.observe(viewLifecycleOwner, Observer { users ->
+            adapter.submitList(users)
+        })
+
+
     }
 
     private fun setupNotificationRecycler(notifications: List<String>) {

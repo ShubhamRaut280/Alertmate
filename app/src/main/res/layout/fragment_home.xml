@@ -82,8 +82,14 @@
                     android:layout_height="wrap_content"
                     />
 
-
-
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:id="@+id/memberRecycler"
+                    app:spanCount="4"
+                    android:padding="10dp"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    tools:listitem="@layout/family_member_layout"
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
 
