@@ -12,10 +12,13 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.shubham.emergencyapplication.Callbacks.ResponseCallBack
 import com.shubham.emergencyapplication.Models.User
+import com.shubham.emergencyapplication.SharedPref.FamilySharedPref.getFamilyMemList
 import com.shubham.emergencyapplication.SharedPref.FamilySharedPref.setFamilyMemList
 import com.shubham.emergencyapplication.Utils.Constants.FAMILY_MEM
 import com.shubham.emergencyapplication.Utils.Constants.LOCATION_REF
 import com.shubham.emergencyapplication.Utils.Constants.USERS_COLLECTION
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 object UserRepository {
     private val db : FirebaseFirestore  = FirebaseFirestore.getInstance()
@@ -48,6 +51,30 @@ object UserRepository {
     fun stopListening() {
         familyMembersListener?.remove()
     }
+
+    fun getSpecificUserInfo(context: Context, id : String, callBack: ResponseCallBack<User>){
+
+            db.collection(USERS_COLLECTION)
+                .document(id)
+                .get()
+                .addOnSuccessListener {
+                    var userInfo = User(
+                        it.getString("name"),
+                        it.getString("email"),
+                        it.getLong("phone") ,
+                        it.id,
+                        it.getString("image_url"),
+                        it.get("family_members") as List<String>?
+                    )
+                    callBack.onSuccess(userInfo)
+                }
+                .addOnFailureListener {
+                    callBack.onError(it.message)
+                }
+
+
+    }
+
 
     fun getUserInfo(context: Context, callBack: ResponseCallBack<User>){
         val userId = auth.currentUser?.uid
@@ -85,6 +112,42 @@ object UserRepository {
                 }
 
 
+    }
+
+    fun getFamilyMembers(context: Context, callBack: ResponseCallBack<List<User>>) {
+        val members: List<String>? = getFamilyMemList(context, FAMILY_MEM)
+        if (members.isNullOrEmpty()) {
+            callBack.onSuccess(emptyList())
+            return
+        }
+
+        val users = mutableListOf<User>()
+        val latch = CountDownLatch(members.size)
+
+        for (member in members) {
+            getSpecificUserInfo(context, member, object : ResponseCallBack<User> {
+                override fun onSuccess(response: User?) {
+                    response?.let { users.add(it) }
+                    latch.countDown()
+                }
+
+                override fun onError(error: String?) {
+                    Log.d(TAG, "onError: $error")
+                    latch.countDown()
+                }
+            })
+        }
+
+        // Wait for the latch to count down to zero or timeout after 30 seconds
+        Thread {
+            try {
+                latch.await(30, TimeUnit.SECONDS)
+                callBack.onSuccess(users)
+            } catch (e: InterruptedException) {
+                Log.d(TAG, "InterruptedException: ${e.message}")
+                callBack.onError("Failed to fetch all user details.")
+            }
+        }.start()
     }
 
     fun setUserInfo(context: Context, map: Map<String, Any>,callBack: ResponseCallBack<String>){
