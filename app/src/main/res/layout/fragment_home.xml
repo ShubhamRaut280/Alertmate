@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_grey"
+    android:background="#f3edf7"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Ui.Fragments.HomeFragment">
 
@@ -29,7 +29,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:id="@+id/userName"
+                        android:id="@+id/name"
                         android:text="Hello Shubham"
                         android:fontFamily="@font/popins"
                         android:includeFontPadding="false"
@@ -52,7 +52,7 @@
                         android:fontFamily="@font/popins"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:layout_below="@id/userName"
+                        android:layout_below="@id/name"
                         android:layout_width="match_parent"
                         android:textColor="@color/black"
                         android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
                     android:fontFamily="@font/popins"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    android:layout_below="@id/userName"
+                    android:layout_below="@id/name"
                     android:layout_width="match_parent"
                     android:layout_margin="15dp"
                     android:textColor="@color/darkergrey"

@@ -3,6 +3,7 @@ package com.shubham.emergencyapplication.Adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.shubham.emergencyapplication.R
 import com.shubham.emergencyapplication.databinding.NotificationRecyclerItemBinding
@@ -13,20 +14,16 @@ class HomeNotificationAdapter(
 ) : RecyclerView.Adapter<HomeNotificationAdapter.HomeNotificationViewHolder>() {
 
     inner class HomeNotificationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val binding = NotificationRecyclerItemBinding.bind(itemView)
+        val name : TextView = itemView.findViewById(R.id.name)
 
         init {
             // Set up the click listener for the item view
             itemView.setOnClickListener {
-                val userName = binding.userName.text.toString()
+                val userName = name.text.toString()
                 onItemClick(userName)
             }
         }
 
-        fun bind(msg: String) {
-            binding.userName.text = msg
-            binding.userName.isSelected = true
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeNotificationViewHolder {
@@ -36,7 +33,10 @@ class HomeNotificationAdapter(
     }
 
     override fun onBindViewHolder(holder: HomeNotificationViewHolder, position: Int) {
-        holder.bind(userList[position])
+        val notification = userList[position]
+        holder.name.text = notification
+        holder.name.isSelected = true
+
     }
 
     override fun getItemCount(): Int {

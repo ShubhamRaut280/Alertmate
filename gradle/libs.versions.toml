@@ -26,11 +26,13 @@ firebaseDatabaseKtx = "21.0.0"
 lifecycleViewmodelAndroid = "2.8.4"
 mpandroidchart = "v3.1.0"
 uiAndroid = "1.6.8"
+viewpager2 = "1.1.0"
 
 [libraries]
 android-image-cropper = { module = "com.theartofdev.edmodo:android-image-cropper", version.ref = "androidImageCropper" }
 android-image-cropper-v282 = { module = "com.theartofdev.edmodo:android-image-cropper", version.ref = "androidImageCropperVersion" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 cropper-android-image-cropper = { module = "com.canhub.cropper:android-image-cropper", version.ref = "canhubAndroidImageCropper" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }

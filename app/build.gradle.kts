@@ -57,4 +57,5 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.circleimageview)
     implementation(libs.glide)
+    implementation(libs.androidx.viewpager2)
 }
