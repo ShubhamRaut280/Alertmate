@@ -64,25 +64,7 @@ object UserRepository {
                 }
         }
     }
-    fun getFamilyMembersList(context: Context, callback: ResponseCallBack<MutableList<String>>) {
-        val userId = auth.currentUser?.uid
-        if (userId != null) {
-            db.collection(USERS_COLLECTION)
-                .document(userId)
-                .addSnapshotListener { snapshot, exception ->
-                    if (exception != null) {
-                        callback.onError(exception.message)
-                        Log.d(TAG, "Error fetching family members list: $exception")
-                        return@addSnapshotListener
-                    }
 
-                    if (snapshot != null && snapshot.exists()) {
-                        val familyMembers = snapshot.get(FAMILY_MEM) as MutableList<String>??: mutableListOf()
-                        callback.onSuccess(familyMembers)
-                    }
-                }
-        }
-    }
     private fun fetchUserDocuments(familyMembers: List<String>, callback: ResponseCallBack<List<User>>) {
         val userRefs = familyMembers.map { db.collection(USERS_COLLECTION).document(it) }
         val users = mutableListOf<User>()
@@ -250,6 +232,27 @@ object UserRepository {
             })
         }
     }
+
+    fun getFamilyMembersList(context: Context, callback: ResponseCallBack<MutableList<String>>) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            db.collection(USERS_COLLECTION)
+                .document(userId)
+                .addSnapshotListener { snapshot, exception ->
+                    if (exception != null) {
+                        callback.onError(exception.message)
+                        Log.d(TAG, "Error fetching family members list: $exception")
+                        return@addSnapshotListener
+                    }
+
+                    if (snapshot != null && snapshot.exists()) {
+                        val familyMembers = snapshot.get(FAMILY_MEM) as MutableList<String>??: mutableListOf()
+                        callback.onSuccess(familyMembers)
+                    }
+                }
+        }
+    }
+
     fun getLocationOnce(context: Context, userid: String?, callBack: ResponseCallBack<FamilyLocation>?) {
         if (!userid.isNullOrEmpty()) {
             realtimeDB.reference.child(LOCATION_REF).child(userid).addListenerForSingleValueEvent(object : ValueEventListener {
@@ -262,7 +265,7 @@ object UserRepository {
                             val timestamp = snapshot.child("timestamp").value as String
                             callBack?.onSuccess(FamilyLocation(name, lat, lng, timestamp))
                         } catch (e: Exception) {
-                            Log.d("UserRepository", "Error getting location: ${e.message}")
+                            Log.d("UserRepository", "Error getting location: ${e.message} ${e.printStackTrace()}for userid $userid")
                             callBack?.onError("Error processing data")
                         }
                     } else {
