@@ -20,4 +20,20 @@ object UserDataSharedPref {
         val sharedPreferences = context.getSharedPreferences(USER_SHARED_PREF, Context.MODE_PRIVATE)
         return sharedPreferences.getBoolean("isProfileUpdated", false)
     }
+
+    fun setUserDetails(context: Context, key : String,  value : String?){
+        var data = ""
+        if(!value.isNullOrEmpty()){
+            data = value
+        }
+        val sharedPreferences = context.getSharedPreferences(USER_SHARED_PREF, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString(key, data)
+        editor.apply()
+    }
+    fun getUserDetails(context: Context, key: String) : String{
+        val shredPref = context.getSharedPreferences(USER_SHARED_PREF, Context.MODE_PRIVATE)
+        return shredPref.getString(key, "") ?: ""
+    }
+
 }

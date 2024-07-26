@@ -8,6 +8,8 @@ object Constants {
     const val PHONE = "phone"
     const val NAME = "name"
     const val FAMILY_MEM = "family_members"
+    const val  IMAGE_URL = "image_url"
+
     const val FAMILY_SHARED_PREF   = "FAMILY_SHARED_PREF"
     const val USER_SHARED_PREF   = "USER_SHARED_PREF"
 

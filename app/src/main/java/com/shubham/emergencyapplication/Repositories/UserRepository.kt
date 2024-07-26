@@ -14,11 +14,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.type.DateTime
 import com.shubham.emergencyapplication.Callbacks.ResponseCallBack
+import com.shubham.emergencyapplication.Models.FamilyLocation
 import com.shubham.emergencyapplication.Models.User
 import com.shubham.emergencyapplication.SharedPref.FamilySharedPref.getFamilyMemList
 import com.shubham.emergencyapplication.SharedPref.FamilySharedPref.setFamilyMemList
+import com.shubham.emergencyapplication.SharedPref.UserDataSharedPref.getUserDetails
+import com.shubham.emergencyapplication.SharedPref.UserDataSharedPref.setUserDetails
 import com.shubham.emergencyapplication.Utils.Constants.FAMILY_MEM
 import com.shubham.emergencyapplication.Utils.Constants.LOCATION_REF
+import com.shubham.emergencyapplication.Utils.Constants.NAME
 import com.shubham.emergencyapplication.Utils.Constants.USERS_COLLECTION
 import com.shubham.emergencyapplication.Utils.DateUtils.getCurrentDateTime
 import java.util.concurrent.CountDownLatch
@@ -48,18 +52,37 @@ object UserRepository {
                     }
 
                     if (snapshot != null && snapshot.exists()) {
+                        val name = snapshot.get(NAME) as String?
+                        if(!name.isNullOrEmpty()) setUserDetails(context, NAME, name)
                         val familyMembers = snapshot.get(FAMILY_MEM) as List<String>? ?: listOf()
 
                         // Fetch the user documents only once
                         fetchUserDocuments(familyMembers, callback)
 
-                        // Set up continuous listeners for each user document
                         setupUserDocumentListeners(familyMembers, callback)
                     }
                 }
         }
     }
+    fun getFamilyMembersList(context: Context, callback: ResponseCallBack<MutableList<String>>) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            db.collection(USERS_COLLECTION)
+                .document(userId)
+                .addSnapshotListener { snapshot, exception ->
+                    if (exception != null) {
+                        callback.onError(exception.message)
+                        Log.d(TAG, "Error fetching family members list: $exception")
+                        return@addSnapshotListener
+                    }
 
+                    if (snapshot != null && snapshot.exists()) {
+                        val familyMembers = snapshot.get(FAMILY_MEM) as MutableList<String>??: mutableListOf()
+                        callback.onSuccess(familyMembers)
+                    }
+                }
+        }
+    }
     private fun fetchUserDocuments(familyMembers: List<String>, callback: ResponseCallBack<List<User>>) {
         val userRefs = familyMembers.map { db.collection(USERS_COLLECTION).document(it) }
         val users = mutableListOf<User>()
@@ -171,41 +194,7 @@ object UserRepository {
 
     }
 
-//    fun getFamilyMembers(context: Context, callBack: ResponseCallBack<List<User>>) {
-//        val members: List<String>? = getFamilyMemList(context, FAMILY_MEM)
-//        if (members.isNullOrEmpty()) {
-//            callBack.onSuccess(emptyList())
-//            return
-//        }
-//
-//        val users = mutableListOf<User>()
-//        val latch = CountDownLatch(members.size)
-//
-//        for (member in members) {
-//            getSpecificUserInfo(context, member, object : ResponseCallBack<User> {
-//                override fun onSuccess(response: User?) {
-//                    response?.let { users.add(it) }
-//                    latch.countDown()
-//                }
-//
-//                override fun onError(error: String?) {
-//                    Log.d(TAG, "onError: $error")
-//                    latch.countDown()
-//                }
-//            })
-//        }
-//
-//        // Wait for the latch to count down to zero or timeout after 30 seconds
-//        Thread {
-//            try {
-//                latch.await(30, TimeUnit.SECONDS)
-//                callBack.onSuccess(users)
-//            } catch (e: InterruptedException) {
-//                Log.d(TAG, "InterruptedException: ${e.message}")
-//                callBack.onError("Failed to fetch all user details.")
-//            }
-//        }.start()
-//    }
+
 
     fun setUserInfo(context: Context, map: Map<String, Any>,callBack: ResponseCallBack<String>){
         val userId = auth.currentUser?.uid
@@ -226,6 +215,7 @@ object UserRepository {
         val userId = auth.currentUser?.uid
         if (userId != null) {
             val location = hashMapOf(
+                "name" to getUserDetails(context, NAME),
                 "latitude" to latitude,
                 "longitude" to longitude,
                 "timestamp" to getCurrentDateTime()
@@ -243,6 +233,7 @@ object UserRepository {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if(snapshot.exists()){
                         try {
+                            val name = snapshot.child("name").value as String
                             val lat = snapshot.child("latitude").value as Double
                             val lng = snapshot.child("longitude").value as Double
                             val timestamp = snapshot.child("timestamp").value as String
@@ -259,4 +250,33 @@ object UserRepository {
             })
         }
     }
+    fun getLocationOnce(context: Context, userid: String?, callBack: ResponseCallBack<FamilyLocation>?) {
+        if (!userid.isNullOrEmpty()) {
+            realtimeDB.reference.child(LOCATION_REF).child(userid).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        try {
+                            val name = snapshot.child("name").value as String
+                            val lat = snapshot.child("latitude").value as Double
+                            val lng = snapshot.child("longitude").value as Double
+                            val timestamp = snapshot.child("timestamp").value as String
+                            callBack?.onSuccess(FamilyLocation(name, lat, lng, timestamp))
+                        } catch (e: Exception) {
+                            Log.d("UserRepository", "Error getting location: ${e.message}")
+                            callBack?.onError("Error processing data")
+                        }
+                    } else {
+                        callBack?.onError("No data available")
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    callBack?.onError(error.message)
+                }
+            })
+        } else {
+            callBack?.onError("User ID is null or empty")
+        }
+    }
+
 }

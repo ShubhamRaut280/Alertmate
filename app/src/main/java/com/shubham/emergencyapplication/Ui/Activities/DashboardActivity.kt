@@ -32,13 +32,21 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.shubham.emergencyapplication.BottomSheets.DialogUtils.showSosBottomSheetDialog
 import com.shubham.emergencyapplication.BottomSheets.showUpdateDetailsBottomSheet
+import com.shubham.emergencyapplication.Callbacks.ResponseCallBack
 import com.shubham.emergencyapplication.Dialogs.DialogUtils.showUpdateDetailsDialog
+import com.shubham.emergencyapplication.Models.User
 import com.shubham.emergencyapplication.R
 import com.shubham.emergencyapplication.Repositories.UserRepository.addLocationToDb
+import com.shubham.emergencyapplication.Repositories.UserRepository.getUserInfo
 import com.shubham.emergencyapplication.SharedPref.UserDataSharedPref.isProfileUpdated
+import com.shubham.emergencyapplication.SharedPref.UserDataSharedPref.setUserDetails
 import com.shubham.emergencyapplication.Ui.Fragments.HomeFragment
 import com.shubham.emergencyapplication.Ui.Fragments.MapFragment
 import com.shubham.emergencyapplication.Ui.Fragments.ProfileFragment
+import com.shubham.emergencyapplication.Utils.Constants.EMAIL
+import com.shubham.emergencyapplication.Utils.Constants.IMAGE_URL
+import com.shubham.emergencyapplication.Utils.Constants.NAME
+import com.shubham.emergencyapplication.Utils.Constants.PHONE
 import com.shubham.emergencyapplication.Utils.DraggableUtils.makeViewDraggable
 import com.shubham.emergencyapplication.Utils.UtilityFuns.handleAdjustResizeForKeyboard
 import com.shubham.emergencyapplication.databinding.ActivityDashboardBinding
@@ -72,7 +80,25 @@ class DashboardActivity : AppCompatActivity() {
         init()
 
         requestLocationPermissions()
+        saveUserDetails()
 
+    }
+
+    private fun saveUserDetails() {
+        getUserInfo(this, object : ResponseCallBack<User>{
+            override fun onSuccess(response: User?) {
+                if (response != null) {
+                    setUserDetails(this@DashboardActivity, NAME, response.name)
+                    setUserDetails(this@DashboardActivity, EMAIL, response.email)
+                    setUserDetails(this@DashboardActivity, PHONE, response.phone.toString())
+                    setUserDetails(this@DashboardActivity, IMAGE_URL, response.image_url)
+                }
+            }
+            override fun onError(error: String?) {
+                // Handle error
+                Log.d("DashboardActivity", "getUserInfoerror : $error")
+            }
+        })
     }
 
     private val locationRequest = LocationRequest.create().apply {

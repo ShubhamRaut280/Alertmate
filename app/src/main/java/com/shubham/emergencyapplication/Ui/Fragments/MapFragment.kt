@@ -18,8 +18,11 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.shubham.emergencyapplication.Callbacks.ResponseCallBack
+import com.shubham.emergencyapplication.Models.FamilyLocation
 import com.shubham.emergencyapplication.R
+import com.shubham.emergencyapplication.Repositories.UserRepository.getFamilyMembersList
 import com.shubham.emergencyapplication.Repositories.UserRepository.getLocation
+import com.shubham.emergencyapplication.Repositories.UserRepository.getLocationOnce
 import com.shubham.emergencyapplication.databinding.FragmentMapBinding
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -50,17 +53,34 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private fun init() {
         //start getting self locations
-        getLocation(requireContext(), FirebaseAuth.getInstance().currentUser?.uid,object :ResponseCallBack<Pair<String, Pair<Double, Double>>>{
-            override fun onSuccess(response: Pair<String, Pair<Double, Double>>?) {
+
+        getFamilyMembersList(requireContext(), object : ResponseCallBack<MutableList<String>>{
+            override fun onSuccess(response: MutableList<String>?) {
                 if (response != null) {
-                    updateMapLocation(response.first, response.second.first, response.second.second)
+                    FirebaseAuth.getInstance().currentUser?.uid?.let { response.add(it) }
+                    for (id in response) {
+                        getLocationOnce(requireContext(), id, object : ResponseCallBack<FamilyLocation> {
+                            override fun onSuccess(response:FamilyLocation?) {
+                                if (response != null) {
+                                    setLocation(response.name, response.timestamp, response.latitude, response.longitude)
+                                }
+                            }
+                            override fun onError(error: String?) {
+                                // Handle error
+                                Log.d("MapFragment", "getLocationerror : $error")
+                            }
+                        })
+                    }
+
                 }
             }
             override fun onError(error: String?) {
                 // Handle error
-                Log.d("MapFragment", "getLocationerror : $error")
+                Log.d("MapFragment", "getFamilyMembersListerror : $error")
             }
         })
+
+
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -111,6 +131,47 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         )
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
     }
+
+
+
+    private fun setLocation( name : String, time: String, lat: Double, lng: Double) {
+        val latLng = LatLng(lat, lng)
+
+        // Convert the provided time string to a Date object
+        val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss:SSS", Locale.getDefault())
+        val locationTime: Date
+        try {
+            locationTime = dateFormat.parse(time) ?: return
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            return
+        }
+
+        // Get the current time
+        val currentTime = Date()
+
+        // Calculate the time difference in minutes
+        val timeDifference = currentTime.time - locationTime.time
+        val minutesDifference = TimeUnit.MILLISECONDS.toMinutes(timeDifference)
+
+        // Determine the color based on the age of the location
+        val markerColor = if (minutesDifference <= 1) {
+            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
+        } else {
+            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)
+        }
+
+        // Update the map
+        googleMap.clear()
+        googleMap.addMarker(
+            MarkerOptions()
+                .position(latLng)
+                .title(name)
+                .icon(markerColor)
+        )
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+    }
+
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
