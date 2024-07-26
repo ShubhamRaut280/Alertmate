@@ -59,15 +59,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun init() {
-
         fetchFamilyMembersAndLocations()
-           mapViewModel.locations.observe(viewLifecycleOwner) { locations ->
-               Log.d("MapFragment", "Locations updated: $locations")
+        mapViewModel.locations.observe(viewLifecycleOwner) { locations ->
+            Log.d("MapFragment", "Locations updated: $locations")
             if (!locations.isNullOrEmpty()) {
                 updateMarkers(locations)
             }
         }
-
     }
 
     private fun fetchFamilyMembersAndLocations() {
@@ -108,26 +106,27 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun updateMarkers(locations: List<FamilyLocation>) {
-        googleMap.clear() // Clear previous markers
+        // Clear previous markers
+        googleMap.clear()
+        markers.clear()
+
         locations.forEach { location ->
             Log.d("MapFragment", "Adding Location Marker: ${location.name} at ${location.latitude}, ${location.longitude}")
             val latLng = LatLng(location.latitude, location.longitude)
-            val marker = markers[location.name]
-            if (marker == null) {
-                // Add new marker
-                markers[location.name] = googleMap.addMarker(
-                    MarkerOptions()
-                        .position(latLng)
-                        .title(location.name)
-                        .icon(getMarkerColor(location.timestamp))
-                )!!
-                Log.d("MapFragment", "Marker added for ${location.name}")
-            } else {
-                // Update existing marker position
-                marker.position = latLng
-                Log.d("MapFragment", "Marker updated for ${location.name}")
+
+            // Add or update marker
+            val markerOptions = MarkerOptions()
+                .position(latLng)
+                .title(location.name)
+                .icon(getMarkerColor(location.timestamp)) // Ensure getMarkerColor returns BitmapDescriptor
+
+            val marker = googleMap.addMarker(markerOptions)
+            if (marker != null) {
+                markers[location.name] = marker
+                Log.d("MapFragment", "Marker added/updated for ${location.name}")
             }
         }
+
         // Adjust camera to show all markers
         if (locations.isNotEmpty()) {
             val boundsBuilder = LatLngBounds.builder()
@@ -138,6 +137,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             Log.d("MapFragment", "Camera adjusted to fit all markers")
         }
     }
+
 
     private fun getMarkerColor(time: String): BitmapDescriptor {
         val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss:SSS", Locale.getDefault())
@@ -155,6 +155,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         } catch (e: ParseException) {
             e.printStackTrace()
             BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)
+        }
+    }
+
+
+    private fun zoomToMarkers() {
+        if (markers.isNotEmpty()) {
+            val boundsBuilder = LatLngBounds.builder()
+            markers.values.forEach { marker ->
+                boundsBuilder.include(marker.position)
+            }
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 100))
+            Log.d("MapFragment", "Camera zoomed to fit all markers")
         }
     }
 
@@ -186,22 +198,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
         }
     }
-    private fun zoomToMarkers() {
-        if (markers.isNotEmpty()) {
-            val boundsBuilder = LatLngBounds.builder()
-            markers.values.forEach { marker ->
-                boundsBuilder.include(marker.position)
-            }
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 100))
-            Log.d("MapFragment", "Camera zoomed to fit all markers")
-        }
-    }
+
     override fun onResume() {
         super.onResume()
-
         binding.mapView.onResume()
         zoomToMarkers()
-
     }
 
     override fun onPause() {
