@@ -3,6 +3,7 @@ package com.shubham.emergencyapplication.Repositories
 import android.content.Context
 import android.util.Log
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -11,6 +12,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.type.DateTime
 import com.shubham.emergencyapplication.Callbacks.ResponseCallBack
 import com.shubham.emergencyapplication.Models.User
 import com.shubham.emergencyapplication.SharedPref.FamilySharedPref.getFamilyMemList
@@ -18,6 +20,7 @@ import com.shubham.emergencyapplication.SharedPref.FamilySharedPref.setFamilyMem
 import com.shubham.emergencyapplication.Utils.Constants.FAMILY_MEM
 import com.shubham.emergencyapplication.Utils.Constants.LOCATION_REF
 import com.shubham.emergencyapplication.Utils.Constants.USERS_COLLECTION
+import com.shubham.emergencyapplication.Utils.DateUtils.getCurrentDateTime
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -224,20 +227,29 @@ object UserRepository {
         if (userId != null) {
             val location = hashMapOf(
                 "latitude" to latitude,
-                "longitude" to longitude
+                "longitude" to longitude,
+                "timestamp" to getCurrentDateTime()
             )
             realtimeDB.reference.child(LOCATION_REF).child(userId)
                 .setValue(location)
         }
     }
-    fun getLocation(context: Context, userid: String?, callBack: ResponseCallBack<Pair<Double, Double>>){
+
+
+
+    fun getLocation(context: Context, userid: String?, callBack: ResponseCallBack<Pair<String,Pair<Double, Double>>>){
         if(!userid.isNullOrEmpty()){
             realtimeDB.reference.child(LOCATION_REF).child(userid).addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if(snapshot.exists()){
-                        val lat = snapshot.child("latitude").value as Double
-                        val lng = snapshot.child("longitude").value as Double
-                        callBack.onSuccess(Pair(lat, lng))
+                        try {
+                            val lat = snapshot.child("latitude").value as Double
+                            val lng = snapshot.child("longitude").value as Double
+                            val timestamp = snapshot.child("timestamp").value as String
+                            callBack.onSuccess(Pair(timestamp, Pair(lat, lng)))
+                        } catch (e: Exception) {
+                            Log.d("UserRepository", "Error getting location: ${e.message}")
+                        }
                     }
                 }
 
