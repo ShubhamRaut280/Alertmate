@@ -1,7 +1,8 @@
 package com.shubham.emergencyapplication.Utils
 
 object Constants {
-
+    val ACCELERATION_TRESOLD = 20.0   // m/s²
+    val GYROSCOPE_THRESOLD = 5.0       // rad/s
 
     const val USERS_COLLECTION = "Users"
     const val EMAIL = "email"

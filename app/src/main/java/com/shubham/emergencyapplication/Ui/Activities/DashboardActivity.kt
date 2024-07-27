@@ -3,10 +3,14 @@ package com.shubham.emergencyapplication.Ui.Activities
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
@@ -15,6 +19,7 @@ import android.view.View.GONE
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import android.view.View.VISIBLE
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -40,6 +45,7 @@ import com.shubham.emergencyapplication.Models.User
 import com.shubham.emergencyapplication.R
 import com.shubham.emergencyapplication.Repositories.UserRepository.addLocationToDb
 import com.shubham.emergencyapplication.Repositories.UserRepository.getUserInfo
+import com.shubham.emergencyapplication.Services.CrashDetectionService
 import com.shubham.emergencyapplication.SharedPref.UserDataSharedPref.isProfileUpdated
 import com.shubham.emergencyapplication.SharedPref.UserDataSharedPref.setUserDetails
 import com.shubham.emergencyapplication.Ui.Fragments.HomeFragment
@@ -81,6 +87,11 @@ class DashboardActivity : AppCompatActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         init()
 
+        val intentFilter = IntentFilter(ACTION_CRASH_DETECTED)
+        if (SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(crashReceiver, intentFilter)
+        }else registerReceiver(crashReceiver, intentFilter, Context.RECEIVER_EXPORTED)
+
         requestLocationPermissions()
         saveUserDetails()
 
@@ -108,11 +119,22 @@ class DashboardActivity : AppCompatActivity() {
         fastestInterval = 2000
         priority = LocationRequest.PRIORITY_HIGH_ACCURACY
     }
-
-
+    private val crashReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent != null && intent.action == ACTION_CRASH_DETECTED) {
+                // Handle the crash detected event
+                Toast.makeText(context, "Crash detected!", Toast.LENGTH_LONG).show()
+                // You can also retrieve data from the intent if needed
+            }
+        }
+    }
+    companion object {
+        const val ACTION_CRASH_DETECTED = "com.shubham.emergencyapplication.CRASH_DETECTED"
+    }
 
     private fun init() {
 
+        startCrashDetectionService(this)
 
         if(!isProfileUpdated(this)){
             showUpdateDetailsBottomSheet(this, FirebaseAuth.getInstance())
@@ -164,7 +186,11 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
     }
-
+    fun startCrashDetectionService(context: Context) {
+        Intent(context, CrashDetectionService::class.java).also { intent ->
+            ActivityCompat.startForegroundService(context, intent)
+        }
+    }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.bottom_navigation_menu, menu)
         return true
@@ -257,6 +283,8 @@ class DashboardActivity : AppCompatActivity() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
-
-
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(crashReceiver)
+    }
 }

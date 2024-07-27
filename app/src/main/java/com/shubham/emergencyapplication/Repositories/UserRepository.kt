@@ -152,7 +152,7 @@ object UserRepository {
                         it.getLong("phone") ,
                         it.id,
                         it.getString("image_url"),
-                        it.get("family_members") as List<String>?
+                        it.get("family_members") as List<String>?,
                     )
                     callBack.onSuccess(userInfo)
                 }
@@ -182,6 +182,7 @@ object UserRepository {
     fun setUserInfo(context: Context, map: Map<String, Any>,callBack: ResponseCallBack<String>){
         val userId = auth.currentUser?.uid
         if (userId != null) {
+
             db.collection(USERS_COLLECTION)
                 .document(userId)
                 .set(map, com.google.firebase.firestore.SetOptions.merge())

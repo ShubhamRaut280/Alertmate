@@ -6,5 +6,5 @@ data class User(
     var phone: Long? = null,
     var id: String = "",
     var image_url: String? = null,
-    var family_members: List<String>? = null
+    var family_members: List<String>? = null,
 )
