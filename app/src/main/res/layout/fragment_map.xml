@@ -19,7 +19,7 @@
              android:layout_gravity="bottom|end"
              android:layout_marginEnd="20dp"
              style="@style/CustomFABStyle"
-             android:layout_marginBottom="100dp"
+             android:layout_marginBottom="20dp"
              android:backgroundTint="@color/main"
              android:contentDescription="Refresh"
              app:layout_constraintBottom_toBottomOf="parent"

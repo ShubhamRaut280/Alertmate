@@ -14,6 +14,7 @@ import android.view.Menu
 import android.view.View.GONE
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+import android.view.View.VISIBLE
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -144,6 +145,8 @@ class DashboardActivity : AppCompatActivity() {
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home -> {
+
+                    binding.addPerson.visibility = VISIBLE
                     viewPager.currentItem = 0
                     true
                 }
@@ -153,6 +156,7 @@ class DashboardActivity : AppCompatActivity() {
                     true
                 }
                 R.id.profile -> {
+                    binding.addPerson.visibility = VISIBLE
                     viewPager.currentItem = 2
                     true
                 }
