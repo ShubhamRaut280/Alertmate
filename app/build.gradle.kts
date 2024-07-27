@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.shubham.emergencyapplication"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.shubham.emergencyapplication"
-        minSdk = 24
-        targetSdk = 34
+        minSdk = 28
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 

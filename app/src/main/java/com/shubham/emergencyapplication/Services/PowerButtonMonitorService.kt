@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
+import com.shubham.emergencyapplication.BroadCastReceivers.SOSReceiver
 import com.shubham.emergencyapplication.BroadCastReceivers.ScreenStateReceiver
 import com.shubham.emergencyapplication.Utils.Constants.ACTION_SOS
 
@@ -17,6 +18,7 @@ class PowerButtonMonitorService : Service() {
     private var lastScreenOffTime: Long = 0
     private val maxPresses = 4
     private val pressInterval = 2000L // Time interval to detect multiple presses in milliseconds
+    lateinit var sosReceiver: SOSReceiver
 
     private val screenStateReceiver = object : ScreenStateReceiver() {
         override fun onScreenStateChanged() {
@@ -32,6 +34,10 @@ class PowerButtonMonitorService : Service() {
         val filter = IntentFilter(Intent.ACTION_SCREEN_OFF)
         filter.addAction(Intent.ACTION_SCREEN_ON)
         registerReceiver(screenStateReceiver, filter)
+        sosReceiver = SOSReceiver()
+        val intentFilter = IntentFilter(ACTION_SOS)
+        registerReceiver(sosReceiver, intentFilter)
+
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -66,6 +72,7 @@ class PowerButtonMonitorService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(screenStateReceiver)
+        unregisterReceiver(sosReceiver)
         handler.removeCallbacksAndMessages(null)
     }
 }

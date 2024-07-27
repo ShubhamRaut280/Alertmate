@@ -1,5 +1,6 @@
 package com.shubham.emergencyapplication.Ui.Activities
 
+import OverlayService
 import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -7,10 +8,12 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.Location
+import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Looper
+import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.View.GONE
@@ -48,7 +51,6 @@ import com.shubham.emergencyapplication.Ui.Fragments.HomeFragment
 import com.shubham.emergencyapplication.Ui.Fragments.MapFragment
 import com.shubham.emergencyapplication.Ui.Fragments.ProfileFragment
 import com.shubham.emergencyapplication.Utils.Constants.ACTION_CRASH_DETECTED
-import com.shubham.emergencyapplication.Utils.Constants.ACTION_SOS
 import com.shubham.emergencyapplication.Utils.Constants.EMAIL
 import com.shubham.emergencyapplication.Utils.Constants.IMAGE_URL
 import com.shubham.emergencyapplication.Utils.Constants.NAME
@@ -58,6 +60,7 @@ import com.shubham.emergencyapplication.databinding.ActivityDashboardBinding
 
 class DashboardActivity : AppCompatActivity() {
 
+    private val REQUEST_CODE = 101
     private val LOCATION_REQUEST_CODE = 1
     private val BACKGROUND_LOCATION_REQUEST_CODE = 2
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -65,7 +68,6 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDashboardBinding
     private lateinit var viewPager: ViewPager2
     private lateinit var bottomNavigationView: BottomNavigationView
-    lateinit var sosReceiver: SOSReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,21 +101,20 @@ class DashboardActivity : AppCompatActivity() {
         requestLocationPermissions()
         saveUserDetails()
 
-
-        sosReceiver = SOSReceiver()
-        val filter = IntentFilter(ACTION_SOS)
-        registerReceiver(sosReceiver, filter)
+//        val intent = Intent(this, OverlayService::class.java)
+//        startService(intent)
+        checkAndRequestOverlayPermission()
 
 
     }
-
-    class SOSReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val message = intent.getBooleanExtra("sos", false)
-            if(message)
-                Toast.makeText(context, "Received message: $message", Toast.LENGTH_SHORT).show()
+    fun checkAndRequestOverlayPermission() {
+        if (!Settings.canDrawOverlays(this)) {
+            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+            intent.data = Uri.parse("package:$packageName")
+            startActivityForResult(intent, REQUEST_CODE)
         }
     }
+
 
     private fun saveUserDetails() {
         getUserInfo(this, object : ResponseCallBack<User>{
@@ -303,7 +304,6 @@ class DashboardActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(sosReceiver)
         unregisterReceiver(crashReceiver)
     }
 }
