@@ -55,6 +55,7 @@ object UserRepository {
                         val name = snapshot.get(NAME) as String?
                         if(!name.isNullOrEmpty()) setUserDetails(context, NAME, name)
                         val familyMembers = snapshot.get(FAMILY_MEM) as List<String>? ?: listOf()
+                        setFamilyMemList(context, FAMILY_MEM, familyMembers)
 
                         // Fetch the user documents only once
                         fetchUserDocuments(familyMembers, callback)

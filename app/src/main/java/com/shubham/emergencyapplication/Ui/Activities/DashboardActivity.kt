@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import android.view.Menu
+import android.view.View.GONE
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import androidx.activity.enableEdgeToEdge
@@ -147,6 +148,7 @@ class DashboardActivity : AppCompatActivity() {
                     true
                 }
                 R.id.map -> {
+                    binding.addPerson.visibility = GONE
                     viewPager.currentItem = 1
                     true
                 }
