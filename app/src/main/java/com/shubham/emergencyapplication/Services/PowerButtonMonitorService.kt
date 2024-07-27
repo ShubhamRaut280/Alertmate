@@ -38,7 +38,6 @@ class PowerButtonMonitorService : Service() {
         override fun onScreenStateChanged() {
             checkScreenState()
             Log.d("PowerButtonMonitor", "change in screen state")
-
         }
     }
 
@@ -53,8 +52,6 @@ class PowerButtonMonitorService : Service() {
         registerReceiver(sosReceiver, intentFilter)
 
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
-
-
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -66,7 +63,6 @@ class PowerButtonMonitorService : Service() {
         if (currentTime - lastScreenOffTime < pressInterval) {
             pressCount++
             Log.d("PowerButtonMonitor", "count increased $pressCount")
-
         } else {
             pressCount = 1
         }
@@ -74,7 +70,6 @@ class PowerButtonMonitorService : Service() {
 
         if (pressCount >= maxPresses) {
             Log.d("PowerButtonMonitor", "Power button pressed $maxPresses times")
-//            Toast.makeText(this, "Power button pressed $maxPresses times", Toast.LENGTH_SHORT).show()
             sendSOSTrigger()
             pressCount = 0
         }
@@ -87,7 +82,6 @@ class PowerButtonMonitorService : Service() {
         Log.d("OverlayService", " in service Received SOS message")
         showOverlay()
     }
-
 
     private fun showOverlay() {
         if (!this::windowManager.isInitialized) {
@@ -106,42 +100,48 @@ class PowerButtonMonitorService : Service() {
         )
         params.gravity = Gravity.CENTER
 
-        val counter : TextView = overlayView.findViewById(R.id.countDown)
-        val cancel : MaterialButton = overlayView.findViewById(R.id.cancel)
-        val trigger : MaterialButton = overlayView.findViewById(R.id.trigger)
+        val counter: TextView = overlayView.findViewById(R.id.countDown)
+        val cancel: MaterialButton = overlayView.findViewById(R.id.cancel)
+        val trigger: MaterialButton = overlayView.findViewById(R.id.trigger)
 
         startCountdown(counter)
         cancel.setOnClickListener {
             cancelCountdown()
-            windowManager.removeView(overlayView)
+            removeOverlay()
         }
         trigger.setOnClickListener {
+            cancelCountdown()
             triggerSOS()
-            windowManager.removeView(overlayView)
+            removeOverlay()
         }
 
         windowManager.addView(overlayView, params)
     }
 
-    private fun triggerSOS() {
-        Toast.makeText(this, "SOS Triggered", Toast.LENGTH_SHORT).show()
+    private fun removeOverlay() {
+        if (::windowManager.isInitialized && ::overlayView.isInitialized) {
+            windowManager.removeView(overlayView)
+        }
     }
 
+    private fun triggerSOS() {
+        cancelCountdown()
+        Toast.makeText(this, "SOS Triggered", Toast.LENGTH_SHORT).show()
+    }
 
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(screenStateReceiver)
         unregisterReceiver(sosReceiver)
         handler.removeCallbacksAndMessages(null)
-        if (::windowManager.isInitialized) {
-            windowManager.removeView(overlayView)
-        }
+        removeOverlay()
     }
 
     private fun startCountdown(timerTextView: TextView) {
         if (isTimerRunning) return
 
-        countDownTimer = object : CountDownTimer(SOS_COUNTDOWN, SOS_COUNTDOWN) {
+        // 10-second countdown with 1-second interval
+        countDownTimer = object : CountDownTimer(SOS_COUNTDOWN, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 timerTextView.text = "${millisUntilFinished / 1000}"
             }
@@ -162,5 +162,6 @@ class PowerButtonMonitorService : Service() {
 
     private fun onCountdownFinished() {
         triggerSOS()
+        removeOverlay() // Ensure overlay is removed when countdown finishes
     }
 }
