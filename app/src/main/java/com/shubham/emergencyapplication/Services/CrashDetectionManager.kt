@@ -70,7 +70,7 @@ class CrashDetectionManager(private val context: Context) : SensorEventListener 
             val accelerationThreshold = ACCELERATION_TRESOLD  // m/s²
             val gyroscopeThreshold = GYROSCOPE_THRESOLD       // rad/s
 
-            if (accelerationMagnitude > accelerationThreshold ) {
+            if (accelerationMagnitude > accelerationThreshold ) { // gyroscope is removed as of now
                 // Detect crash
                 Log.d("CrashDetectiond", "Crash detected with both sensors!")
                 sendBroadcast()
@@ -89,8 +89,6 @@ class CrashDetectionManager(private val context: Context) : SensorEventListener 
 
     private fun sendBroadcast() {
         val intent = Intent(DashboardActivity.ACTION_CRASH_DETECTED).apply {
-            // Optionally add extra data to the intent
-            // putExtra("location", "some_location_data")
         }
         context.sendBroadcast(intent)
     }
