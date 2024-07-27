@@ -9,4 +9,6 @@
     <color name="tickbg">#f5f8ff</color>
     <color name="darkergrey">#2B2828</color>
     <color name="fab_bg">#eaddff</color>
+    <color name="red">#FF1504</color>
+    <color name="red_bg">#E6DBDA</color>
 </resources>
