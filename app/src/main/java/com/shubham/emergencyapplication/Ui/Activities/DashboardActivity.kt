@@ -1,8 +1,6 @@
 package com.shubham.emergencyapplication.Ui.Activities
 
 import android.Manifest
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -17,13 +15,11 @@ import android.util.Log
 import android.view.Menu
 import android.view.View.GONE
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -40,23 +36,24 @@ import com.google.firebase.auth.FirebaseAuth
 import com.shubham.emergencyapplication.BottomSheets.DialogUtils.showSosBottomSheetDialog
 import com.shubham.emergencyapplication.BottomSheets.showUpdateDetailsBottomSheet
 import com.shubham.emergencyapplication.Callbacks.ResponseCallBack
-import com.shubham.emergencyapplication.Dialogs.DialogUtils.showUpdateDetailsDialog
 import com.shubham.emergencyapplication.Models.User
 import com.shubham.emergencyapplication.R
 import com.shubham.emergencyapplication.Repositories.UserRepository.addLocationToDb
 import com.shubham.emergencyapplication.Repositories.UserRepository.getUserInfo
 import com.shubham.emergencyapplication.Services.CrashDetectionService
+import com.shubham.emergencyapplication.Services.PowerButtonMonitorService
 import com.shubham.emergencyapplication.SharedPref.UserDataSharedPref.isProfileUpdated
 import com.shubham.emergencyapplication.SharedPref.UserDataSharedPref.setUserDetails
 import com.shubham.emergencyapplication.Ui.Fragments.HomeFragment
 import com.shubham.emergencyapplication.Ui.Fragments.MapFragment
 import com.shubham.emergencyapplication.Ui.Fragments.ProfileFragment
+import com.shubham.emergencyapplication.Utils.Constants.ACTION_CRASH_DETECTED
+import com.shubham.emergencyapplication.Utils.Constants.ACTION_SOS
 import com.shubham.emergencyapplication.Utils.Constants.EMAIL
 import com.shubham.emergencyapplication.Utils.Constants.IMAGE_URL
 import com.shubham.emergencyapplication.Utils.Constants.NAME
 import com.shubham.emergencyapplication.Utils.Constants.PHONE
 import com.shubham.emergencyapplication.Utils.DraggableUtils.makeViewDraggable
-import com.shubham.emergencyapplication.Utils.UtilityFuns.handleAdjustResizeForKeyboard
 import com.shubham.emergencyapplication.databinding.ActivityDashboardBinding
 
 class DashboardActivity : AppCompatActivity() {
@@ -68,6 +65,7 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDashboardBinding
     private lateinit var viewPager: ViewPager2
     private lateinit var bottomNavigationView: BottomNavigationView
+    lateinit var sosReceiver: SOSReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +81,12 @@ class DashboardActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
+        try {
+            val intent = Intent(this, PowerButtonMonitorService::class.java)
+            startService(intent)
+        } catch (e: Exception) {
+//            TODO("Not yet implemented")
+        }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         init()
 
@@ -92,9 +95,24 @@ class DashboardActivity : AppCompatActivity() {
             registerReceiver(crashReceiver, intentFilter)
         }else registerReceiver(crashReceiver, intentFilter, Context.RECEIVER_EXPORTED)
 
+
         requestLocationPermissions()
         saveUserDetails()
 
+
+        sosReceiver = SOSReceiver()
+        val filter = IntentFilter(ACTION_SOS)
+        registerReceiver(sosReceiver, filter)
+
+
+    }
+
+    class SOSReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val message = intent.getBooleanExtra("sos", false)
+            if(message)
+                Toast.makeText(context, "Received message: $message", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun saveUserDetails() {
@@ -129,7 +147,7 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
     companion object {
-        const val ACTION_CRASH_DETECTED = "com.shubham.emergencyapplication.CRASH_DETECTED"
+
     }
 
     private fun init() {
@@ -285,6 +303,7 @@ class DashboardActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        unregisterReceiver(sosReceiver)
         unregisterReceiver(crashReceiver)
     }
 }

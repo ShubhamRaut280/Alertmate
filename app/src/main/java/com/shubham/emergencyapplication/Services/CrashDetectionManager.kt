@@ -9,6 +9,7 @@ import android.hardware.SensorManager
 import android.util.Log
 import com.shubham.emergencyapplication.Ui.Activities.DashboardActivity
 import com.shubham.emergencyapplication.Utils.Constants.ACCELERATION_TRESOLD
+import com.shubham.emergencyapplication.Utils.Constants.ACTION_CRASH_DETECTED
 import com.shubham.emergencyapplication.Utils.Constants.GYROSCOPE_THRESOLD
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -88,7 +89,7 @@ class CrashDetectionManager(private val context: Context) : SensorEventListener 
     }
 
     private fun sendBroadcast() {
-        val intent = Intent(DashboardActivity.ACTION_CRASH_DETECTED).apply {
+        val intent = Intent(ACTION_CRASH_DETECTED).apply {
         }
         context.sendBroadcast(intent)
     }

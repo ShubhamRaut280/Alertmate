@@ -27,6 +27,17 @@
             android:foregroundServiceType="location"
             android:exported="false" />
 
+
+
+
+        <service android:name=".Services.PowerButtonMonitorService" />
+        <receiver android:name=".BroadCastReceivers.ScreenStateReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SCREEN_OFF" />
+                <action android:name="android.intent.action.SCREEN_ON" />
+            </intent-filter>
+        </receiver>
         <activity
             android:name=".Ui.Activities.DashboardActivity"
             android:exported="false" />

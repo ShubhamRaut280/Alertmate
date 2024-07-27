@@ -4,6 +4,10 @@ object Constants {
     val ACCELERATION_TRESOLD = 20.0   // m/s²
     val GYROSCOPE_THRESOLD = 5.0       // rad/s
 
+
+    const val ACTION_CRASH_DETECTED = "com.shubham.emergencyapplication.CRASH_DETECTED"
+    const val ACTION_SOS = "com.shubham.emergencyapplication.SOS_ACTION"
+
     const val USERS_COLLECTION = "Users"
     const val EMAIL = "email"
     const val PHONE = "phone"
