@@ -8,6 +8,8 @@ object Constants {
     const val ACTION_CRASH_DETECTED = "com.shubham.emergencyapplication.CRASH_DETECTED"
     const val ACTION_SOS = "com.shubham.emergencyapplication.SOS_ACTION"
 
+    const val SOS_COUNTDOWN = 10000L
+
     const val USERS_COLLECTION = "Users"
     const val EMAIL = "email"
     const val PHONE = "phone"

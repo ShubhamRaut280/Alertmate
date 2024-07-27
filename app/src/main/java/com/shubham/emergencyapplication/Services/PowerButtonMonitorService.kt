@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.PixelFormat
+import android.os.CountDownTimer
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
@@ -12,14 +13,18 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import android.widget.TextView
 import android.widget.Toast
+import com.google.android.material.button.MaterialButton
 import com.shubham.emergencyapplication.BroadCastReceivers.SOSReceiver
 import com.shubham.emergencyapplication.BroadCastReceivers.ScreenStateReceiver
 import com.shubham.emergencyapplication.R
 import com.shubham.emergencyapplication.Utils.Constants.ACTION_SOS
+import com.shubham.emergencyapplication.Utils.Constants.SOS_COUNTDOWN
 
 class PowerButtonMonitorService : Service() {
-
+    private var countDownTimer: CountDownTimer? = null
+    private var isTimerRunning = false
     private lateinit var windowManager: WindowManager
     private lateinit var overlayView: View
     private val handler = Handler()
@@ -90,7 +95,7 @@ class PowerButtonMonitorService : Service() {
         }
 
         val themedContext = ContextThemeWrapper(this, R.style.Theme_EmergencyApplication)
-        overlayView = LayoutInflater.from(themedContext).inflate(R.layout.success_dialog, null)
+        overlayView = LayoutInflater.from(themedContext).inflate(R.layout.emergency_dialog, null)
 
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -101,9 +106,26 @@ class PowerButtonMonitorService : Service() {
         )
         params.gravity = Gravity.CENTER
 
+        val counter : TextView = overlayView.findViewById(R.id.countDown)
+        val cancel : MaterialButton = overlayView.findViewById(R.id.cancel)
+        val trigger : MaterialButton = overlayView.findViewById(R.id.trigger)
+
+        startCountdown(counter)
+        cancel.setOnClickListener {
+            cancelCountdown()
+            windowManager.removeView(overlayView)
+        }
+        trigger.setOnClickListener {
+            triggerSOS()
+            windowManager.removeView(overlayView)
+        }
+
         windowManager.addView(overlayView, params)
     }
 
+    private fun triggerSOS() {
+        Toast.makeText(this, "SOS Triggered", Toast.LENGTH_SHORT).show()
+    }
 
 
     override fun onDestroy() {
@@ -114,5 +136,31 @@ class PowerButtonMonitorService : Service() {
         if (::windowManager.isInitialized) {
             windowManager.removeView(overlayView)
         }
+    }
+
+    private fun startCountdown(timerTextView: TextView) {
+        if (isTimerRunning) return
+
+        countDownTimer = object : CountDownTimer(SOS_COUNTDOWN, SOS_COUNTDOWN) {
+            override fun onTick(millisUntilFinished: Long) {
+                timerTextView.text = "${millisUntilFinished / 1000}"
+            }
+
+            override fun onFinish() {
+                onCountdownFinished()
+            }
+        }.start()
+
+        isTimerRunning = true
+    }
+
+    private fun cancelCountdown() {
+        countDownTimer?.cancel()
+        countDownTimer = null
+        isTimerRunning = false
+    }
+
+    private fun onCountdownFinished() {
+        triggerSOS()
     }
 }
