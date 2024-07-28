@@ -20,6 +20,8 @@ import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -34,6 +36,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.shubham.emergencyapplication.BottomSheets.DialogUtils.showSosBottomSheetDialog
 import com.shubham.emergencyapplication.BottomSheets.showUpdateDetailsBottomSheet
@@ -54,6 +57,7 @@ import com.shubham.emergencyapplication.Utils.Constants.EMAIL
 import com.shubham.emergencyapplication.Utils.Constants.IMAGE_URL
 import com.shubham.emergencyapplication.Utils.Constants.NAME
 import com.shubham.emergencyapplication.Utils.Constants.PHONE
+import com.shubham.emergencyapplication.Utils.Constants.REQ_PERMISSIONS
 import com.shubham.emergencyapplication.Utils.DraggableUtils.makeViewDraggable
 import com.shubham.emergencyapplication.databinding.ActivityDashboardBinding
 
@@ -106,11 +110,22 @@ class DashboardActivity : AppCompatActivity() {
 
     }
     fun checkAndRequestOverlayPermission() {
-        if (!Settings.canDrawOverlays(this)) {
-            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
-            intent.data = Uri.parse("package:$packageName")
-            startActivityForResult(intent, REQUEST_CODE)
-        }
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Overlay Permissions")
+            .setMessage("This permission is required for showing you notifications")
+            .setNegativeButton("Cancel") { dialog, which ->
+                dialog.dismiss()
+            }
+
+            .setPositiveButton("Give Permission") { dialog, which ->
+                if (!Settings.canDrawOverlays(this)) {
+                    val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+                    intent.data = Uri.parse("package:$packageName")
+                    startActivityForResult(intent, REQUEST_CODE)
+                }
+            }
+            .show()
+
     }
 
 
@@ -164,6 +179,7 @@ class DashboardActivity : AppCompatActivity() {
 
     private fun init() {
 
+        requestPermissions()
         startCrashDetectionService(this)
 
         if(!isProfileUpdated(this)){
@@ -254,7 +270,31 @@ class DashboardActivity : AppCompatActivity() {
             startLocationUpdates()
         }
     }
+    private fun requestPermissions() {
+        val permissionsToRequest = REQ_PERMISSIONS.filter {
+            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+        }.toTypedArray()
 
+        if (permissionsToRequest.isNotEmpty()) {
+            requestPermissionsLauncher.launch(permissionsToRequest)
+        }
+    }
+
+    private val requestPermissionsLauncher: ActivityResultLauncher<Array<String>> =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            // Handle the results
+            permissions.entries.forEach {
+                val permissionName = it.key
+                val isGranted = it.value
+                if (isGranted) {
+                    // Permission granted
+                    println("$permissionName granted")
+                } else {
+                    // Permission denied
+                    println("$permissionName denied")
+                }
+            }
+        }
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {

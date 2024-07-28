@@ -1,5 +1,7 @@
 package com.shubham.emergencyapplication.Utils
 
+import android.Manifest
+
 object Constants {
     val ACCELERATION_TRESOLD = 20.0   // m/s²
     val GYROSCOPE_THRESOLD = 5.0       // rad/s
@@ -21,4 +23,16 @@ object Constants {
     const val USER_SHARED_PREF   = "USER_SHARED_PREF"
 
     const val LOCATION_REF = "LocationsUpdates"
+
+
+     val REQ_PERMISSIONS = arrayOf(
+        Manifest.permission.INTERNET,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+        Manifest.permission.FOREGROUND_SERVICE,
+        Manifest.permission.SEND_SMS,
+        Manifest.permission.READ_SMS,
+        Manifest.permission.RECEIVE_SMS
+    )
 }
