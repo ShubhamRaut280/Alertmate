@@ -33,6 +33,9 @@ object Constants {
         Manifest.permission.FOREGROUND_SERVICE,
         Manifest.permission.SEND_SMS,
         Manifest.permission.READ_SMS,
-        Manifest.permission.RECEIVE_SMS
+        Manifest.permission.RECEIVE_SMS,
+         Manifest.permission.READ_MEDIA_IMAGES,
+//         Manifest.permission.READ_MEDIA_VIDEO,
+//         Manifest.permission.READ_MEDIA_AUDIO
     )
 }

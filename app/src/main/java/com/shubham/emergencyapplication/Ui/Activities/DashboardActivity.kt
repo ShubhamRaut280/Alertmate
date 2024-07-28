@@ -183,7 +183,7 @@ class DashboardActivity : AppCompatActivity() {
         startCrashDetectionService(this)
 
         if(!isProfileUpdated(this)){
-            showUpdateDetailsBottomSheet(this, FirebaseAuth.getInstance())
+            showUpdateDetailsBottomSheet(this, FirebaseAuth.getInstance(), false)
         }
 
         makeViewDraggable(binding.addPerson)

@@ -21,6 +21,7 @@ import com.shubham.emergencyapplication.SharedPref.FamilySharedPref.setFamilyMem
 import com.shubham.emergencyapplication.SharedPref.UserDataSharedPref.getUserDetails
 import com.shubham.emergencyapplication.SharedPref.UserDataSharedPref.setUserDetails
 import com.shubham.emergencyapplication.Utils.Constants.FAMILY_MEM
+import com.shubham.emergencyapplication.Utils.Constants.IMAGE_URL
 import com.shubham.emergencyapplication.Utils.Constants.LOCATION_REF
 import com.shubham.emergencyapplication.Utils.Constants.NAME
 import com.shubham.emergencyapplication.Utils.Constants.USERS_COLLECTION
@@ -56,6 +57,7 @@ object UserRepository {
                         if(!name.isNullOrEmpty()) setUserDetails(context, NAME, name)
                         val familyMembers = snapshot.get(FAMILY_MEM) as List<String>? ?: listOf()
                         setFamilyMemList(context, FAMILY_MEM, familyMembers)
+                        setUserDetails(context, IMAGE_URL, snapshot.getString(IMAGE_URL)?: "")
 
                         // Fetch the user documents only once
                         fetchUserDocuments(familyMembers, callback)
@@ -141,6 +143,41 @@ object UserRepository {
 
     }
 
+
+    fun getUserInfoContinuous(context: Context, callBack: ResponseCallBack<User>): ListenerRegistration {
+        val userId = auth.currentUser?.uid
+        val db = FirebaseFirestore.getInstance()
+
+        if (userId != null) {
+            val userDocumentRef = db.collection(USERS_COLLECTION).document(userId)
+
+            // Attach a snapshot listener to the document
+            return userDocumentRef.addSnapshotListener { snapshot, exception ->
+                if (exception != null) {
+                    callBack.onError(exception.message)
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    val userInfo = User(
+                        snapshot.getString("name"),
+                        snapshot.getString("email"),
+                        snapshot.getLong("phone"),
+                        snapshot.id,
+                        snapshot.getString("image_url"),
+                        snapshot.get("family_members") as List<String>?,
+                    )
+                    userInfo.emergency = snapshot.getBoolean("emergency") ?: false
+                    callBack.onSuccess(userInfo)
+                } else {
+                    callBack.onError("No such document")
+                }
+            }
+        } else {
+            callBack.onError("User not authenticated")
+            return ListenerRegistration { }
+        }
+    }
 
     fun getUserInfo(context: Context, callBack: ResponseCallBack<User>){
         val userId = auth.currentUser?.uid

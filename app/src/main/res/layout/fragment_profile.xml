@@ -11,6 +11,16 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            app:indicatorColor="@color/white"
+            android:id="@+id/pb"
+            app:trackColor="@color/main"
+            android:visibility="visible"
+            app:trackCornerRadius="10dp"
+            android:indeterminate="true" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:background="@drawable/bottom_round_corner"
@@ -20,14 +30,26 @@
                     android:paddingBottom="10dp"
                     android:orientation="vertical"
                     android:layout_height="wrap_content">
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:layout_width="120dp"
-                        android:padding="10dp"
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
                         android:layout_margin="10dp"
+                        android:id="@+id/addImage"
                         android:layout_gravity="center_horizontal"
-                        android:layout_height="120dp"
-                        android:src="@drawable/avatar"
-                        android:id="@+id/profileImg"/>
+                        android:layout_height="wrap_content">
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/profileImg"
+                            android:layout_width="115dp"
+                            android:padding="10dp"
+                            android:layout_height="120dp"
+                            android:src="@drawable/avatar" />
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:tint="@color/white"
+                            android:layout_gravity="bottom|end"
+                            android:src="@drawable/add"/>
+                    </FrameLayout>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -69,7 +91,6 @@
                             android:layout_gravity="center_horizontal"
                             android:fontFamily="@font/popins"
                             android:inputType="textCapWords"
-                            android:text="rautshbuhm@gamil.com"
                             />
                     </RelativeLayout>
                     <RelativeLayout
@@ -98,8 +119,6 @@
                             android:layout_centerVertical="true"
                             android:layout_gravity="center_horizontal"
                             android:fontFamily="@font/popins"
-                            android:inputType="textCapWords"
-                            android:text="108491204"
                             />
                     </RelativeLayout>
 

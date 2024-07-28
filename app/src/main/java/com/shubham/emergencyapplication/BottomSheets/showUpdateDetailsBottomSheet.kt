@@ -5,14 +5,18 @@ import com.google.firebase.auth.FirebaseAuth
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContentProviderCompat.requireContext
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
@@ -24,32 +28,29 @@ import com.shubham.emergencyapplication.Repositories.UserRepository.getUserInfo
 import com.shubham.emergencyapplication.Repositories.UserRepository.setUserInfo
 import com.shubham.emergencyapplication.SharedPref.UserDataSharedPref.setProfileUpdated
 import com.shubham.emergencyapplication.Ui.Activities.DashboardActivity
+import de.hdodenhof.circleimageview.CircleImageView
 
-fun showUpdateDetailsBottomSheet(context: Activity, auth: FirebaseAuth) {
+fun showUpdateDetailsBottomSheet(context: Activity, auth: FirebaseAuth, isRemovable : Boolean ) {
         try {
-            // Create BottomSheetDialog
             val bottomSheetDialog = BottomSheetDialog(context)
             val view = LayoutInflater.from(context).inflate(R.layout.update_details, null)
 
-            // Set the content view of the BottomSheetDialog
             bottomSheetDialog.setContentView(view)
 
-            // Initialize UI elements
             val confirm = view.findViewById<MaterialButton>(R.id.add)
             val email = view.findViewById<TextInputLayout>(R.id.email)
             val name = view.findViewById<TextInputLayout>(R.id.name)
             val phone = view.findViewById<TextInputLayout>(R.id.phone)
             val progress = view.findViewById<ProgressBar>(R.id.progressBar)
 
-            // Disable dialog canceling
-            bottomSheetDialog.setCancelable(false)
-            bottomSheetDialog.setCanceledOnTouchOutside(false)
+            if (!isRemovable) {
+                bottomSheetDialog.setCancelable(false)
+                bottomSheetDialog.setCanceledOnTouchOutside(false)
+            }
 
-            // Set email field
             email.editText?.setText(auth.currentUser?.email)
             email.editText?.isEnabled = false
 
-            // Fetch user info and populate fields
             getUserInfo(context, object : ResponseCallBack<User> {
                 override fun onSuccess(response: User?) {
                     if (response != null) {
@@ -69,12 +70,10 @@ fun showUpdateDetailsBottomSheet(context: Activity, auth: FirebaseAuth) {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             })
-            // Handle confirm button click
             confirm.setOnClickListener { v: View? ->
                 handleSubmit(email, name, phone, progress, confirm, context, bottomSheetDialog)
             }
 
-            // Show the BottomSheetDialog
             bottomSheetDialog.show()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -136,3 +135,8 @@ private fun handleSubmit(
         })
     }
 }
+
+
+
+
+
