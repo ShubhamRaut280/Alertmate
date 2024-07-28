@@ -154,7 +154,9 @@ class PowerButtonMonitorService : Service() {
             override fun onSuccess(response: List<User>?) {
                 if (response != null) {
                     for (user in response) {
-                        sendSms(this@PowerButtonMonitorService,user.phone.toString(), generateMessage(lat, lng, name ,user.name.toString()), )
+                        val message = generateMessage(lat, lng, name, user.name.toString())
+                        Log.d("sms", "message : $message")
+                        sendSms(this@PowerButtonMonitorService,user.phone.toString(), message  )
                     }
                 }
             }

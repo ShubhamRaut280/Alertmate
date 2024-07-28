@@ -5,9 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.telephony.SmsManager
 import android.util.Log
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 object smsManager {
 
+    // Function to send SMS
     fun sendSms(context: Context, phoneNumber: String, message: String) {
         try {
             val smsManager = SmsManager.getDefault()
@@ -19,8 +22,15 @@ object smsManager {
             val deliveryPendingIntent = PendingIntent.getBroadcast(context, 0, deliveryIntent,
                 PendingIntent.FLAG_IMMUTABLE)
 
-            // Send SMS
-            smsManager.sendTextMessage(phoneNumber, null, message, sentPendingIntent, deliveryPendingIntent)
+            // Check if message needs to be split into multiple parts
+            if (message.length > 160) {
+                val parts = smsManager.divideMessage(message)
+                smsManager.sendMultipartTextMessage(phoneNumber, null, parts, null, null)
+                Log.d("sms", "Multipart message sent")
+            } else {
+                smsManager.sendTextMessage(phoneNumber, null, message, sentPendingIntent, deliveryPendingIntent)
+                Log.d("sms", "Single message sent")
+            }
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -29,7 +39,11 @@ object smsManager {
     }
 
     fun generateMessage(lat: Double, lng: Double, sender: String, receiver: String): String {
-     return "Hello $receiver $sender is in some emergency situation. here is his location https://www.google.com/maps/search/?api=1&query=$lat,$lng\n" +
-             "Take care thank you!"
+        // URL-encode latitude and longitude to handle special characters
+        val encodedLat = URLEncoder.encode(lat.toString(), StandardCharsets.UTF_8.toString())
+        val encodedLng = URLEncoder.encode(lng.toString(), StandardCharsets.UTF_8.toString())
+
+        return "Hello $receiver, $sender is in an emergency situation. Here is their location: https://www.google.com/maps/search/?api=1&query=$encodedLat%2C$encodedLng\n" +
+                "Please take care. Thank you!"
     }
 }

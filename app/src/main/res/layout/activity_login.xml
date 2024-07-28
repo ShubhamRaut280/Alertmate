@@ -142,7 +142,7 @@
                 android:layout_height="match_parent"
                 android:fontFamily="@font/popins"
                 android:includeFontPadding="false"
-                android:text="Add member"
+                android:text="Login"
                 android:textSize="18sp"
                 android:textColor="@color/white"
                 android:textStyle="bold"
