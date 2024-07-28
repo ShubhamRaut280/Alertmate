@@ -30,7 +30,7 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         android:layout_marginTop="20dp"
-        android:text="Are you sure\n you want to logout?"/>
+        android:text="Are you sure you want to logout?"/>
 
     <TextView
         android:id="@+id/subTitle"

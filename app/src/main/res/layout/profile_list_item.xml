@@ -2,6 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/main"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
+    android:paddingTop="8dp"
+    android:focusable="true"
+    android:clickable="true"
+    android:background="?android:attr/selectableItemBackground"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.button.MaterialButton
@@ -12,7 +19,7 @@
         android:layout_margin="10dp"
         android:layout_centerVertical="true"
         app:iconSize="20dp"
-        app:icon="@drawable/logout"
+        app:icon="@drawable/family"
         app:iconTint="@color/main"
         android:id="@+id/itemIcon"
         android:paddingStart="16dp"
@@ -22,6 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/itemName"
+        android:enabled="false"
         android:textColor="@color/black"
         android:includeFontPadding="false"
         android:textSize="18sp"
@@ -34,7 +42,6 @@
         android:layout_gravity="center_horizontal"
         android:fontFamily="@font/popins"
         android:inputType="textCapWords"
-        android:text="rautshbuhm@gamil.com"
         android:ellipsize="marquee"
         android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true"
