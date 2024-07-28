@@ -127,8 +127,11 @@ object UserRepository {
                         it.getLong("phone") ,
                         it.id,
                         it.getString("image_url"),
-                        it.get("family_members") as List<String>?
+                        it.get("family_members") as List<String>?,
                     )
+                    if(it.getBoolean("emergency") != null)
+                        userInfo.emergency = it.getBoolean("emergency")!!
+                    else userInfo.emergency = false
                     callBack.onSuccess(userInfo)
                 }
                 .addOnFailureListener {
@@ -154,6 +157,9 @@ object UserRepository {
                         it.getString("image_url"),
                         it.get("family_members") as List<String>?,
                     )
+                    if(it.getBoolean("emergency") != null)
+                        userInfo.emergency = it.getBoolean("emergency")!!
+                    else userInfo.emergency = false
                     callBack.onSuccess(userInfo)
                 }
                 .addOnFailureListener {

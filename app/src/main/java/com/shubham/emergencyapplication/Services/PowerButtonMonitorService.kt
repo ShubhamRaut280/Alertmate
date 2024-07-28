@@ -28,6 +28,7 @@ import com.shubham.emergencyapplication.R
 import com.shubham.emergencyapplication.Repositories.UserRepository.getFamilyMembers
 import com.shubham.emergencyapplication.Repositories.UserRepository.getLocation
 import com.shubham.emergencyapplication.Repositories.UserRepository.getLocationOnce
+import com.shubham.emergencyapplication.Repositories.UserRepository.setUserInfo
 import com.shubham.emergencyapplication.Utils.Constants.ACTION_SOS
 import com.shubham.emergencyapplication.Utils.Constants.SOS_COUNTDOWN
 import com.shubham.emergencyapplication.Utils.SMS.smsManager.generateMessage
@@ -163,6 +164,26 @@ class PowerButtonMonitorService : Service() {
 
             override fun onError(error: String?) {
                 setMessageWithLocation(lat, lng, name)
+            }
+        })
+
+
+
+        setEmergenctStatus()
+    }
+
+    private fun setEmergenctStatus() {
+        // setting emergency in firebase
+        val map = mapOf(
+            "emergency" to true
+        )
+        setUserInfo(this, map, object : ResponseCallBack<String> {
+            override fun onSuccess(response: String?) {
+//                Toast.makeText(this@PowerButtonMonitorService, response, Toast.LENGTH_SHORT).show()
+                Log.d("sms", "message : $response")
+            }
+            override fun onError(error: String?) {
+                setEmergenctStatus()
             }
         })
     }

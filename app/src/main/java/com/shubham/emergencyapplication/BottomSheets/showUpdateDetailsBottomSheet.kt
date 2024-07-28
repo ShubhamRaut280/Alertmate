@@ -111,7 +111,8 @@ private fun handleSubmit(
         val map = mapOf<String, Any>(
             "email" to emailval,
             "name" to nameval,
-            "phone" to phoneval.toLong()
+            "phone" to phoneval.toLong(),
+            "emergency" to false
         )
         progress.visibility = View.VISIBLE
         confirm.isEnabled = false
