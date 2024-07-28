@@ -53,6 +53,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun init() {
         binding.login.setOnClickListener {
+            showProgress()
             val email = binding.email.editText?.text.toString()
             val password = binding.pass.editText?.text.toString()
 
@@ -61,10 +62,22 @@ class LoginActivity : AppCompatActivity() {
             binding.pass.error = null
 
             // Validate inputs
-            if (email.isEmpty()) binding.email.error = "Email empty"
-            if (password.isEmpty()) binding.pass.error = "Password empty"
-            if (email.isNotEmpty() && !email.contains('@')) binding.email.error = "Invalid email format"
-            if (password.length < 6) binding.pass.error = "Password must be at least 6 characters long"
+            if (email.isEmpty()) {
+                binding.email.error = "Email empty"
+                hideProgress()
+            }
+            if (password.isEmpty()) {
+                hideProgress()
+                binding.pass.error = "Password empty"
+            }
+            if (email.isNotEmpty() && !email.contains('@')) {
+                hideProgress()
+                binding.email.error = "Invalid email format"
+            }
+            if (password.length < 6) {
+                hideProgress()
+                binding.pass.error = "Password must be at least 6 characters long"
+            }
 
             // Proceed if no errors
             if (email.isNotEmpty() && password.isNotEmpty() && email.contains('@') && password.length >= 6) {
@@ -114,10 +127,12 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+                    hideProgress()
                     Log.d("Login", "signInWithEmail:success")
                     // Optionally start a new activity
                     showLoginSuccessDialog()
                 } else {
+                    hideProgress()
                     val exception = task.exception
                     Log.w("Login", "signInWithEmail:failure", exception)
                     handleAuthException(exception)
@@ -129,10 +144,12 @@ class LoginActivity : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+                    hideProgress()
                     Log.d("SignUp", "createUserWithEmail:success")
                     showSigninsuccess()
 //                    Toast.makeText(this@LoginActivity, "Sign Up Successful", Toast.LENGTH_SHORT).show()
                 } else {
+                    hideProgress()
                     val exception = task.exception
                     Log.w("SignUp", "createUserWithEmail:failure", exception)
                     handleAuthException(exception)
@@ -143,20 +160,25 @@ class LoginActivity : AppCompatActivity() {
     private fun handleAuthException(exception: Exception?) {
         when (exception) {
             is FirebaseAuthInvalidUserException -> {
+                hideProgress()
                 binding.email.error = "Email is not registered"
             }
             is FirebaseAuthInvalidCredentialsException -> {
                 if (exception.message?.contains("The email address is badly formatted") == true) {
+                    hideProgress()
                     binding.email.error = "Invalid email format"
                 } else {
+                    hideProgress()
                     binding.email.error = "Invalid credentials"
                     binding.pass.error = "Invalid credentials"
                 }
             }
             is FirebaseAuthWeakPasswordException -> {
+                hideProgress()
                 binding.pass.error = "Password must be at least 6 characters long"
             }
             else -> {
+                hideProgress()
                 Toast.makeText(this@LoginActivity, "Operation Failed: ${exception?.message}", Toast.LENGTH_SHORT).show()
             }
         }
@@ -242,6 +264,18 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun showProgress(){
+        binding.login.text = ""
+        binding.progressBar.visibility = View.VISIBLE
+    }
+    private fun hideProgress(){
+        if(isLogin)
+            binding.login.text = "Login"
+        else
+            binding.login.text = "Create Account"
+
+        binding.progressBar.visibility = View.GONE
+    }
 
 
 }

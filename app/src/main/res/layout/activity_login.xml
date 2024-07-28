@@ -128,19 +128,37 @@
             android:text="Forgot Poassword"
             android:textSize="16sp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/login"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:fontFamily="@font/popins"
-            android:includeFontPadding="false"
-            android:text="Login"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:cornerRadius="20dp" />
+            android:layout_marginEnd="20dp">
+
+            <!-- MaterialButton -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/login"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/popins"
+                android:includeFontPadding="false"
+                android:text="Add member"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:cornerRadius="20dp"
+                app:backgroundTint="@color/main" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/white"
+                android:paddingTop="2dp"
+                android:visibility="gone" />
+        </FrameLayout>
 
 
         <Button
