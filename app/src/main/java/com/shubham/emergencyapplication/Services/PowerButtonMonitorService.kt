@@ -15,12 +15,23 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.gms.common.api.Response
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.shubham.emergencyapplication.BroadCastReceivers.SOSReceiver
 import com.shubham.emergencyapplication.BroadCastReceivers.ScreenStateReceiver
+import com.shubham.emergencyapplication.Callbacks.ResponseCallBack
+import com.shubham.emergencyapplication.Models.FamilyLocation
+import com.shubham.emergencyapplication.Models.User
 import com.shubham.emergencyapplication.R
+import com.shubham.emergencyapplication.Repositories.UserRepository.getFamilyMembers
+import com.shubham.emergencyapplication.Repositories.UserRepository.getLocation
+import com.shubham.emergencyapplication.Repositories.UserRepository.getLocationOnce
 import com.shubham.emergencyapplication.Utils.Constants.ACTION_SOS
 import com.shubham.emergencyapplication.Utils.Constants.SOS_COUNTDOWN
+import com.shubham.emergencyapplication.Utils.SMS.smsManager.generateMessage
+import com.shubham.emergencyapplication.Utils.SMS.smsManager.sendSms
 
 class PowerButtonMonitorService : Service() {
     private var countDownTimer: CountDownTimer? = null
@@ -126,7 +137,32 @@ class PowerButtonMonitorService : Service() {
 
     private fun triggerSOS() {
         cancelCountdown()
-        Toast.makeText(this, "SOS Triggered", Toast.LENGTH_SHORT).show()
+        getLocationOnce(this,FirebaseAuth.getInstance().currentUser?.uid, object :ResponseCallBack<FamilyLocation>{
+            override fun onSuccess(response: FamilyLocation?) {
+                if (response != null) {
+                    setMessageWithLocation(response.latitude, response.longitude, response.name)
+                }
+            }
+            override fun onError(error: String?) {
+                triggerSOS()
+            }
+        })
+    }
+
+    private fun setMessageWithLocation(lat : Double, lng : Double, name : String) {
+        getFamilyMembers(this, object : ResponseCallBack<List<User>> {
+            override fun onSuccess(response: List<User>?) {
+                if (response != null) {
+                    for (user in response) {
+                        sendSms(this@PowerButtonMonitorService,user.phone.toString(), generateMessage(lat, lng, name ,user.name.toString()), )
+                    }
+                }
+            }
+
+            override fun onError(error: String?) {
+                setMessageWithLocation(lat, lng, name)
+            }
+        })
     }
 
     override fun onDestroy() {
@@ -144,6 +180,7 @@ class PowerButtonMonitorService : Service() {
         countDownTimer = object : CountDownTimer(SOS_COUNTDOWN, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 timerTextView.text = "${millisUntilFinished / 1000}"
+                Log.d("Countdown", "Countdown: ${millisUntilFinished / 1000}")
             }
 
             override fun onFinish() {

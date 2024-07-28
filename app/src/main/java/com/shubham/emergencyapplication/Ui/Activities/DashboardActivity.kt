@@ -59,6 +59,7 @@ import com.shubham.emergencyapplication.databinding.ActivityDashboardBinding
 
 class DashboardActivity : AppCompatActivity() {
 
+    private val SMS_PERMISSION_CODE = 11
     private val REQUEST_CODE = 101
     private val LOCATION_REQUEST_CODE = 1
     private val BACKGROUND_LOCATION_REQUEST_CODE = 2
@@ -91,14 +92,12 @@ class DashboardActivity : AppCompatActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         init()
 
-        val intentFilter = IntentFilter(ACTION_CRASH_DETECTED)
-        if (SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(crashReceiver, intentFilter)
-        }else registerReceiver(crashReceiver, intentFilter, Context.RECEIVER_EXPORTED)
 
 
+        registerReceivers()
         requestLocationPermissions()
         saveUserDetails()
+        requestSmsPermission()
 
 //        val intent = Intent(this, OverlayService::class.java)
 //        startService(intent)
@@ -145,6 +144,19 @@ class DashboardActivity : AppCompatActivity() {
                 // You can also retrieve data from the intent if needed
             }
         }
+    }
+
+    fun registerReceivers(){
+
+
+
+        val intentFilter = IntentFilter(ACTION_CRASH_DETECTED)
+        if (SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(crashReceiver, intentFilter)
+        }else registerReceiver(crashReceiver, intentFilter, Context.RECEIVER_EXPORTED)
+
+        registerReceiver(smsSentReceiver, IntentFilter("SMS_SENT"), RECEIVER_NOT_EXPORTED)
+        registerReceiver(smsDeliveredReceiver, IntentFilter("SMS_DELIVERED"), RECEIVER_NOT_EXPORTED)
     }
     companion object {
 
@@ -304,5 +316,31 @@ class DashboardActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(crashReceiver)
+    }
+
+
+    private fun requestSmsPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.SEND_SMS), SMS_PERMISSION_CODE)
+        }
+    }
+    private val smsSentReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when (resultCode) {
+                RESULT_OK -> Toast.makeText(context, "SMS sent", Toast.LENGTH_SHORT).show()
+                else -> Toast.makeText(context, "SMS not sent", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private val smsDeliveredReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when (resultCode) {
+                RESULT_OK -> Toast.makeText(context, "SMS delivered", Toast.LENGTH_SHORT).show()
+                else -> Toast.makeText(context, "SMS not delivered", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
