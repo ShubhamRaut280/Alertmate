@@ -97,11 +97,66 @@
             android:inputType="number" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/imgtitile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/popins"
+            android:text="Add a profile image"
+            android:textAlignment="center"
+            android:layout_centerVertical="true"
+            android:visibility="gone"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/addImage"
+            android:includeFontPadding="false"
+            android:paddingStart="15dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:id="@+id/addImage"
+            android:layout_marginEnd="20dp"
+            android:layout_height="wrap_content">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profileImg"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:padding="10dp"
+                android:backgroundTint="@color/tickbg"
+                android:src="@drawable/avatar"
+                />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:includeFontPadding="false"
+                android:src="@drawable/add"
+                android:tint="@color/main"
+                android:layout_gravity="bottom|end"
+                android:backgroundTint="@color/tickbg"/>
+
+        </FrameLayout>
+    </RelativeLayout>
+
+
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp">
 
         <!-- MaterialButton -->
