@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:cornerRadius="80dp"
+        android:includeFontPadding="false"
+        android:layout_margin="10dp"
+        android:layout_centerVertical="true"
+        app:iconSize="20dp"
+        app:icon="@drawable/logout"
+        app:iconTint="@color/main"
+        android:id="@+id/itemIcon"
+        android:paddingStart="16dp"
+        android:backgroundTint="@color/tickbg"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/itemName"
+        android:textColor="@color/black"
+        android:includeFontPadding="false"
+        android:textSize="18sp"
+        android:layout_toEndOf="@id/itemIcon"
+        android:layout_marginEnd="7dp"
+        android:textStyle="bold"
+        android:layout_marginStart="-5dp"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@id/right"
+        android:layout_gravity="center_horizontal"
+        android:fontFamily="@font/popins"
+        android:inputType="textCapWords"
+        android:text="rautshbuhm@gamil.com"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:scrollHorizontally="true" />
+
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_marginEnd="5dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:id="@+id/right"
+        android:padding="8dp"
+        android:layout_height="40dp"
+        android:src="@drawable/right_png"/>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_below="@id/itemIcon"
+        />
+
+</RelativeLayout>

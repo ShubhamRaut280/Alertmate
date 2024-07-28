@@ -2,13 +2,124 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     tools:context=".Ui.Fragments.ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:background="@drawable/bottom_round_corner"
+                    android:padding="20dp"
+                    android:paddingBottom="20dp"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="120dp"
+                        android:padding="10dp"
+                        android:layout_margin="10dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_height="120dp"
+                        android:src="@drawable/avatar"
+                        android:id="@+id/profileImg"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/name"
+                        android:layout_marginStart="20dp"
+                        android:textColor="@color/white"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:layout_gravity="center_horizontal"
+                        android:fontFamily="@font/popins"
+                        android:inputType="textCapWords"
+                        android:text="Shubham Raut"
+                        android:layout_marginEnd="20dp"
+                        />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_margin="10dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/mail"
+                            android:id="@+id/mailIcon"
+                            android:layout_centerVertical="true"
+                            android:padding="5dp"
+                            android:tint="@color/white"/>
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/email"
+                            android:textColor="@color/white"
+                            android:textSize="18sp"
+                            android:layout_toEndOf="@id/mailIcon"
+                            android:textStyle="bold"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center_horizontal"
+                            android:fontFamily="@font/popins"
+                            android:inputType="textCapWords"
+                            android:text="rautshbuhm@gamil.com"
+                            />
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_margin="10dp"
+                            android:layout_height="40dp"
+                            android:src="@android:drawable/sym_action_call"
+                            android:id="@+id/phoneIcon"
+                            android:rotationX="180"
+                            android:layout_centerVertical="true"
+                            android:padding="5dp"
+                            android:tint="@color/white"/>
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/phone"
+                            android:textColor="@color/white"
+                            android:textSize="18sp"
+                            android:layout_toEndOf="@id/phoneIcon"
+                            android:textStyle="bold"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center_horizontal"
+                            android:fontFamily="@font/popins"
+                            android:inputType="textCapWords"
+                            android:text="108491204"
+                            />
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:id="@+id/profileItemsRecycler"
+                    tools:listitem="@layout/profile_list_item"
+                    android:layout_margin="5dp"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
