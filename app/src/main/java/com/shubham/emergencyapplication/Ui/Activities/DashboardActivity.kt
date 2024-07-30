@@ -110,21 +110,23 @@ class DashboardActivity : AppCompatActivity() {
 
     }
     fun checkAndRequestOverlayPermission() {
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Overlay Permissions")
-            .setMessage("This permission is required for showing you notifications")
-            .setNegativeButton("Cancel") { dialog, which ->
-                dialog.dismiss()
-            }
-
-            .setPositiveButton("Give Permission") { dialog, which ->
-                if (!Settings.canDrawOverlays(this)) {
-                    val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
-                    intent.data = Uri.parse("package:$packageName")
-                    startActivityForResult(intent, REQUEST_CODE)
+        if(!Settings.canDrawOverlays(this)){
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Overlay Permissions")
+                .setMessage("This permission is required for showing you notifications")
+                .setNegativeButton("Cancel") { dialog, which ->
+                    dialog.dismiss()
                 }
-            }
-            .show()
+
+                .setPositiveButton("Give Permission") { dialog, which ->
+                    if (!Settings.canDrawOverlays(this)) {
+                        val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+                        intent.data = Uri.parse("package:$packageName")
+                        startActivityForResult(intent, REQUEST_CODE)
+                    }
+                }
+                .show()
+        }
 
     }
 
@@ -162,14 +164,6 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     fun registerReceivers(){
-
-
-
-        val intentFilter = IntentFilter(ACTION_CRASH_DETECTED)
-        if (SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(crashReceiver, intentFilter)
-        }else registerReceiver(crashReceiver, intentFilter, Context.RECEIVER_EXPORTED)
-
         registerReceiver(smsSentReceiver, IntentFilter("SMS_SENT"), RECEIVER_NOT_EXPORTED)
         registerReceiver(smsDeliveredReceiver, IntentFilter("SMS_DELIVERED"), RECEIVER_NOT_EXPORTED)
     }
@@ -355,7 +349,6 @@ class DashboardActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(crashReceiver)
     }
 
 

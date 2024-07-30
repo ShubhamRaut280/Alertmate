@@ -19,7 +19,7 @@ class CrashDetectionService : Service() {
         super.onCreate()
 
         crashDetectionManager = CrashDetectionManager(this)
-
+//
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
@@ -33,15 +33,14 @@ class CrashDetectionService : Service() {
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Crash Detection Service")
             .setContentText("Detecting crashes...")
-            .setSmallIcon(R.drawable.profile)
+            .setSmallIcon(R.drawable.logo)
             .build()
 
         startForeground(NOTIFICATION_ID, notification)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // This method is called every time the service is started
-        // You can perform additional tasks if needed
+
         return START_STICKY
     }
 
@@ -51,7 +50,11 @@ class CrashDetectionService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        crashDetectionManager.stop()
+        try {
+            crashDetectionManager.stop()
+        } catch (e: Exception) {
+
+        }
     }
 
     companion object {

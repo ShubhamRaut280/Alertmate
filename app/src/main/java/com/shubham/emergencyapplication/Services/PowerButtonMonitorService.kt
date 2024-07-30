@@ -1,9 +1,13 @@
 package com.shubham.emergencyapplication.Services
 
 import android.app.Service
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.PixelFormat
+import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.IBinder
@@ -29,6 +33,7 @@ import com.shubham.emergencyapplication.Repositories.UserRepository.getFamilyMem
 import com.shubham.emergencyapplication.Repositories.UserRepository.getLocation
 import com.shubham.emergencyapplication.Repositories.UserRepository.getLocationOnce
 import com.shubham.emergencyapplication.Repositories.UserRepository.setUserInfo
+import com.shubham.emergencyapplication.Utils.Constants.ACTION_CRASH_DETECTED
 import com.shubham.emergencyapplication.Utils.Constants.ACTION_SOS
 import com.shubham.emergencyapplication.Utils.Constants.SOS_COUNTDOWN
 import com.shubham.emergencyapplication.Utils.SMS.smsManager.generateMessage
@@ -60,8 +65,15 @@ class PowerButtonMonitorService : Service() {
         filter.addAction(Intent.ACTION_SCREEN_ON)
         registerReceiver(screenStateReceiver, filter)
         sosReceiver = SOSReceiver()
-        val intentFilter = IntentFilter(ACTION_SOS)
-        registerReceiver(sosReceiver, intentFilter)
+        val sosIntentFilter = IntentFilter(ACTION_SOS)
+        val crashIntentFilter = IntentFilter(ACTION_CRASH_DETECTED)
+        if (SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(sosReceiver, sosIntentFilter)
+            registerReceiver(crashReceiver, crashIntentFilter)
+        }else {
+            registerReceiver(sosReceiver, sosIntentFilter, RECEIVER_NOT_EXPORTED)
+            registerReceiver(crashReceiver, crashIntentFilter, Context.RECEIVER_EXPORTED)
+        }
 
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
     }
@@ -192,6 +204,7 @@ class PowerButtonMonitorService : Service() {
         super.onDestroy()
         unregisterReceiver(screenStateReceiver)
         unregisterReceiver(sosReceiver)
+        unregisterReceiver(crashReceiver)
         handler.removeCallbacksAndMessages(null)
         removeOverlay()
     }
@@ -222,6 +235,21 @@ class PowerButtonMonitorService : Service() {
 
     private fun onCountdownFinished() {
         triggerSOS()
-        removeOverlay() // Ensure overlay is removed when countdown finishes
+        removeOverlay()
     }
+
+    // for detected crashes
+    private val crashReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent != null && intent.action == ACTION_CRASH_DETECTED) {
+                // Handle the crash detected event
+                Toast.makeText(context, "Crash detected!", Toast.LENGTH_LONG).show()
+                cancelCountdown()
+                sendSOSTrigger()
+
+            }
+        }
+    }
+
+
 }
