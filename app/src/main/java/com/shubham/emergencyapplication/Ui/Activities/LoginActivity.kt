@@ -52,6 +52,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun init() {
+        binding.backBtn.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+        window.statusBarColor = getColor(R.color.main)
         binding.login.setOnClickListener {
             showProgress()
             val email = binding.email.editText?.text.toString()
