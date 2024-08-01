@@ -108,6 +108,10 @@ class PowerButtonMonitorService : Service() {
     }
 
     private fun showOverlay() {
+        if (::overlayView.isInitialized) {
+            removeOverlay()
+        }
+
         if (!this::windowManager.isInitialized) {
             windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         }
@@ -139,12 +143,20 @@ class PowerButtonMonitorService : Service() {
             removeOverlay()
         }
 
-        windowManager.addView(overlayView, params)
+        try {
+            windowManager.addView(overlayView, params)
+        } catch (e: Exception) {
+//            TODO("Not yet implemented")
+        }
     }
 
     private fun removeOverlay() {
         if (::windowManager.isInitialized && ::overlayView.isInitialized) {
-            windowManager.removeView(overlayView)
+            try {
+                windowManager.removeView(overlayView)
+            } catch (e: Exception) {
+//                TODO("Not yet implemented")
+            }
         }
     }
 
