@@ -21,6 +21,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:paddingTop="20dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
@@ -54,6 +55,7 @@
                         android:textStyle="bold"
                         android:layout_below="@id/name"
                         android:layout_width="match_parent"
+                        android:layout_marginBottom="20dp"
                         android:textColor="@color/black"
                         android:layout_height="wrap_content"
                         />

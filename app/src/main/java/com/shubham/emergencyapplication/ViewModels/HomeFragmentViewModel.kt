@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.shubham.emergencyapplication.Models.User
 import com.shubham.emergencyapplication.Repositories.UserRepository
 import com.shubham.emergencyapplication.Callbacks.ResponseCallBack
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 class HomeFragmentViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _data = MutableLiveData<List<User>>()
+
     val data: LiveData<List<User>> get() = _data
 
 

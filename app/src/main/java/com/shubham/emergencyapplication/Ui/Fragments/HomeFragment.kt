@@ -12,12 +12,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.shubham.emergencyapplication.Adapters.HomeNotificationAdapter
 import com.shubham.emergencyapplication.Adapters.MemberAdapter
 import com.shubham.emergencyapplication.Callbacks.ResponseCallBack
 import com.shubham.emergencyapplication.Models.User
 import com.shubham.emergencyapplication.R
 import com.shubham.emergencyapplication.Repositories.UserRepository.getFamilyMembers
+import com.shubham.emergencyapplication.SharedPref.UserDataSharedPref.getUserDetails
+import com.shubham.emergencyapplication.Utils.Constants.NAME
+import com.shubham.emergencyapplication.Utils.DateUtils.greetBasedOnTime
 import com.shubham.emergencyapplication.ViewModels.HomeFragmentViewModel
 import com.shubham.emergencyapplication.databinding.ActivityDashboardBinding
 import com.shubham.emergencyapplication.databinding.FragmentHomeBinding
@@ -46,8 +50,8 @@ class HomeFragment : Fragment() {
     private fun init(){
         viewModel = ViewModelProvider(this).get(HomeFragmentViewModel::class.java)
 
-        val notifications = listOf("Please give location permission", "please give camera permsission")
-        setupNotificationRecycler(notifications)
+//        val notifications = listOf("Please give location permission", "please give camera permsission")
+//        setupNotificationRecycler(notifications)
         setUpMemberRecycler()
     }
 
@@ -58,7 +62,10 @@ class HomeFragment : Fragment() {
         binding.memberRecycler.adapter = adapter
 
         viewModel.data.observe(viewLifecycleOwner, Observer { users ->
+            val name = getUserDetails(requireContext(), NAME)
+            binding.name.text = "Hello $name"
             adapter.submitList(users)
+            binding.timeMsg.text = greetBasedOnTime()
         })
 
 
