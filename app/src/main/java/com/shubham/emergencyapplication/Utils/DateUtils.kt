@@ -2,6 +2,7 @@ package com.shubham.emergencyapplication.Utils
 
 import java.text.SimpleDateFormat
 import java.time.LocalTime
+import java.util.Calendar
 import java.util.Date
 
 object DateUtils {
@@ -11,12 +12,18 @@ object DateUtils {
     }
 
     fun greetBasedOnTime(): String {
-        val currentTime = LocalTime.now()
-        return when {
-            currentTime.isBefore(LocalTime.NOON) -> "Good Morning"
-            currentTime.isBefore(LocalTime.of(17, 0)) -> "Good Afternoon"
-            currentTime.isBefore(LocalTime.of(20, 0)) -> "Good Evening"
-            else -> "Good Night"
+        val c = Calendar.getInstance()
+        val timeOfDay = c[Calendar.HOUR_OF_DAY]
+
+        return if (timeOfDay >= 0 && timeOfDay < 12) {
+            "Good Morning"
+        } else if (timeOfDay >= 12 && timeOfDay < 18) {
+            "Good Afternoon"
+        } else if (timeOfDay >= 18 && timeOfDay < 24) {
+            "Good Evening"
+        } else {
+            "Hello"
         }
+
     }
 }
