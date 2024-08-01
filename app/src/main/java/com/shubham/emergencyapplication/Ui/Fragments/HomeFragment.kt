@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.shubham.emergencyapplication.Adapters.HomeNotificationAdapter
 import com.shubham.emergencyapplication.Adapters.MemberAdapter
+import com.shubham.emergencyapplication.BottomSheets.DialogUtils.showUserDetailsSheet
 import com.shubham.emergencyapplication.Callbacks.ResponseCallBack
 import com.shubham.emergencyapplication.Models.User
 import com.shubham.emergencyapplication.R
@@ -58,7 +59,9 @@ class HomeFragment : Fragment() {
     fun setUpMemberRecycler(){
 
         binding.memberRecycler.layoutManager = GridLayoutManager(requireContext(), 4) // 2 columns
-        adapter = MemberAdapter(requireContext())
+        adapter = MemberAdapter(requireContext(), onItemClick = { user ->
+            showUserDetailsSheet(user, requireContext(), parentFragmentManager)
+        })
         binding.memberRecycler.adapter = adapter
 
         viewModel.data.observe(viewLifecycleOwner, Observer { users ->
