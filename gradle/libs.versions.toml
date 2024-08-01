@@ -32,6 +32,7 @@ viewpager2 = "1.1.0"
 firebaseFirestore = "25.0.0"
 playServicesMaps = "19.0.0"
 playServicesLocation = "21.3.0"
+swiperefreshlayout = "1.1.0"
 
 [libraries]
 android-image-cropper = { module = "com.theartofdev.edmodo:android-image-cropper", version.ref = "androidImageCropper" }
@@ -66,6 +67,7 @@ androidx-ui-android = { group = "androidx.compose.ui", name = "ui-android", vers
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

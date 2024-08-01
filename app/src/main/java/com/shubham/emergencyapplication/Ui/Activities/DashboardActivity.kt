@@ -259,7 +259,10 @@ class DashboardActivity : AppCompatActivity() {
             != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION), BACKGROUND_LOCATION_REQUEST_CODE)
+                arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.FOREGROUND_SERVICE, Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.FOREGROUND_SERVICE_LOCATION
+                ), BACKGROUND_LOCATION_REQUEST_CODE)
         } else {
             startLocationUpdates()
         }

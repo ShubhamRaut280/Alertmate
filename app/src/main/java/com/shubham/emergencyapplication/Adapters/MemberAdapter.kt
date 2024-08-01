@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.shubham.emergencyapplication.Models.User
 import com.shubham.emergencyapplication.R
@@ -30,7 +31,10 @@ class MemberAdapter(
         holder.nameTextView.text = item.name
         holder.nameTextView.isSelected = true
         if(!item.image_url.isNullOrEmpty()){
-            Glide.with(context).load(item.image_url).into(holder.photoImageView)
+            Glide.with(context)
+                .load(item.image_url)
+                .placeholder(R.drawable.load)
+                .into(holder.photoImageView)
         }
         if(item.emergency){
             Log.d("MemberAdapter", "onBindViewHolder: ${item.emergency}")

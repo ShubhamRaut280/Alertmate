@@ -83,7 +83,10 @@ class ProfileFragment : Fragment() {
                     binding.phone.text = data.phone.toString()
                     val url = data.image_url
                     if(!url.isNullOrEmpty()){
-                        Glide.with(requireContext()).load(url).into(binding.profileImg)
+                        Glide.with(requireContext())
+                            .load(url)
+                            .placeholder(R.drawable.image_progress_animation)
+                            .into(binding.profileImg)
                     }
                 }
             }
@@ -106,7 +109,6 @@ class ProfileFragment : Fragment() {
         val itemsList  = mutableListOf(
 
             ProfileItem(R.drawable.edit, "Edit profile"),
-            ProfileItem(R.drawable.family, "Family members"),
             ProfileItem(R.drawable.logout, "Logout")
         )
         binding.profileItemsRecycler.layoutManager = LinearLayoutManager(requireContext())
