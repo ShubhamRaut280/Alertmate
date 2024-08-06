@@ -28,12 +28,24 @@
                     android:layout_margin="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+                    
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_margin="10dp"
+                        android:src="@drawable/avatar"
+                        android:id="@+id/myprofileImg"
+                        android:layout_centerVertical="true"
+                        />
+                    
                     <TextView
+                        android:layout_toEndOf="@id/myprofileImg"
                         android:id="@+id/name"
+                        android:layout_centerVertical="true"
                         android:text="Hello Shubham"
-                        android:fontFamily="@font/popins"
+                        android:fontFamily="@font/loraitalic"
                         android:includeFontPadding="false"
-                        android:textSize="18sp"
+                        android:textSize="26sp"
                         android:textStyle="bold"
                         android:layout_width="match_parent"
                         android:textColor="@color/black"
@@ -45,22 +57,25 @@
                         android:focusableInTouchMode="true"
                         android:scrollHorizontally="true" />
 
-                    <TextView
-                        android:includeFontPadding="false"
-                        android:id="@+id/timeMsg"
-                        android:text="Good Morning"
-                        android:fontFamily="@font/popins"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_below="@id/name"
-                        android:layout_width="match_parent"
-                        android:layout_marginBottom="20dp"
-                        android:textColor="@color/black"
-                        android:layout_height="wrap_content"
-                        />
+
 
                 </RelativeLayout>
-
+                <TextView
+                    android:includeFontPadding="false"
+                    android:id="@+id/timeMsg"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:text="Good Morning"
+                    android:fontFamily="@font/lora"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_toEndOf="@id/myprofileImg"
+                    android:layout_below="@id/name"
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="20dp"
+                    android:textColor="@color/black"
+                    android:layout_height="wrap_content"
+                    />
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:id="@+id/notificationRecycler"

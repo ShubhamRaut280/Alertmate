@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.shubham.emergencyapplication.Adapters.HomeNotificationAdapter
 import com.shubham.emergencyapplication.Adapters.MemberAdapter
@@ -21,6 +22,7 @@ import com.shubham.emergencyapplication.Models.User
 import com.shubham.emergencyapplication.R
 import com.shubham.emergencyapplication.Repositories.UserRepository.getFamilyMembers
 import com.shubham.emergencyapplication.SharedPref.UserDataSharedPref.getUserDetails
+import com.shubham.emergencyapplication.Utils.Constants.IMAGE_URL
 import com.shubham.emergencyapplication.Utils.Constants.NAME
 import com.shubham.emergencyapplication.Utils.DateUtils.greetBasedOnTime
 import com.shubham.emergencyapplication.ViewModels.HomeFragmentViewModel
@@ -66,7 +68,9 @@ class HomeFragment : Fragment() {
 
         viewModel.data.observe(viewLifecycleOwner, Observer { users ->
             val name = getUserDetails(requireContext(), NAME)
+            val img = getUserDetails(requireContext(), IMAGE_URL)
             binding.name.text = "Hello $name"
+            if(!img.isNullOrEmpty())Glide.with(requireContext()).load(img).into(binding.myprofileImg)
             adapter.submitList(users)
             binding.timeMsg.text = greetBasedOnTime()
         })
