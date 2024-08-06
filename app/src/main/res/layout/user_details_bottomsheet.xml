@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingStart="20dp"
     android:paddingEnd="20dp"
+    android:background="@color/main"
     android:paddingTop="10dp"
     android:paddingBottom="10dp">
 
@@ -34,16 +35,17 @@
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/mailLayout"
         android:layout_below="@+id/divider"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_toEndOf="@id/profileImg"
+        android:fontFamily="@font/popins"
         android:gravity="center"
         android:textAlignment="textStart"
-        android:layout_marginStart="20dp"
         android:textColor="@color/white"
         android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginEnd="20dp"
-        android:fontFamily="@font/popins" />
+        android:textStyle="bold" />
 
     <RelativeLayout
         android:id="@+id/mailLayout"
