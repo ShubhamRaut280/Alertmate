@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/main"
     android:paddingStart="20dp"
     android:paddingEnd="20dp"
     android:paddingTop="10dp"
@@ -12,7 +11,7 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="100dp"
-        android:layout_height="5dp"
+        android:layout_height="4dp"
         android:background="@drawable/round_corner_card_bg"
         app:dividerColor="@color/white"
         android:layout_centerHorizontal="true"
