@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <!-- Declaring hardware features that your app uses -->
     <uses-feature
         android:name="android.hardware.telephony"
-        android:required="false" />
-
-    <!-- Permissions your app requires -->
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" tools:ignore="background-location-access"/>
+        android:required="false" /> <!-- Permissions your app requires -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission
+        android:name="android.permission.ACCESS_BACKGROUND_LOCATION"
+        tools:ignore="background-location-access" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
-
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name=".MyApplication"
@@ -34,51 +32,47 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EmergencyApplication"
         tools:targetApi="35">
-
+        <activity
+            android:name=".Ui.Activities.LoginActivity"
+            android:exported="false" />
         <!-- Metadata for Google Maps API key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDN073M2fDogpzE8Aa4PLIfkAeCbCOpCX4" />
-
-        <!-- Crash Detection Service -->
+            android:value="AIzaSyDN073M2fDogpzE8Aa4PLIfkAeCbCOpCX4" /> <!-- Crash Detection Service -->
         <service
             android:name=".Services.CrashDetectionService"
-            android:foregroundServiceType="location"
-            android:exported="false" />
-
-        <!-- SOS Receiver -->
-        <receiver android:name=".BroadCastReceivers.SOSReceiver"
+            android:exported="false"
+            android:foregroundServiceType="location" /> <!-- SOS Receiver -->
+        <receiver
+            android:name=".BroadCastReceivers.SOSReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.shubham.emergencyapplication.SOS_ACTION" />
                 <!-- Uncomment if needed -->
                 <!-- <action android:name="com.shubham.emergencyapplication.SHOW_OVERLAY" /> -->
             </intent-filter>
-        </receiver>
-
-        <!-- Power Button Monitor Service -->
-        <service android:name=".Services.PowerButtonMonitorService" android:exported="false" /> <!-- Added exported attribute -->
-
+        </receiver> <!-- Power Button Monitor Service -->
+        <service
+            android:name=".Services.PowerButtonMonitorService"
+            android:exported="false" /> <!-- Added exported attribute -->
         <!-- Screen State Receiver -->
-        <receiver android:name=".BroadCastReceivers.ScreenStateReceiver"
+        <receiver
+            android:name=".BroadCastReceivers.ScreenStateReceiver"
             android:exported="false"> <!-- Set exported to false if it's not used by other apps -->
             <intent-filter>
                 <action android:name="android.intent.action.SCREEN_OFF" />
                 <action android:name="android.intent.action.SCREEN_ON" />
             </intent-filter>
-        </receiver>
-
-        <!-- Dashboard Activity -->
+        </receiver> <!-- Dashboard Activity -->
         <activity
             android:name=".Ui.Activities.DashboardActivity"
-            android:exported="false" />
-
-        <!-- Login Activity -->
+            android:exported="false" /> <!-- Login Activity -->
         <activity
-            android:name=".Ui.Activities.LoginActivity"
+            android:name=".Ui.Activities.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
