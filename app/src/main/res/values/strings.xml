@@ -4,4 +4,5 @@
     <string name="logininSuccessSubtitle">Successfully logged in</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="appname">Alertmate</string>
 </resources>
