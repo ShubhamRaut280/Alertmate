@@ -35,8 +35,8 @@ To run this project, follow the steps below:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/your-username/emergency-help-app.git
-   cd emergency-help-app
+   git clone https://github.com/ShubhamRaut280/Alertmate.git
+   cd Alertmate
 2.  **Configure Firebase**
 
  - **Create a Firebase project** and add the Android app.
