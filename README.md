@@ -19,6 +19,17 @@ The **Alertmate** is designed to assist users in critical situations by connecti
 - **Firebase Realtime Database**: Real-time location tracking of family members.
 - **Firebase Firestore**: Managing family member data and user details.
 
+# Screenshots 
+
+
+
+
+![image](https://github.com/user-attachments/assets/a4a192d8-c75d-4256-96c9-ca27f67ca132)![image](https://github.com/user-attachments/assets/f6446d47-0428-4ad0-be30-342f829a9b5a)![image](https://github.com/user-attachments/assets/13938e1e-d533-4b31-a1dc-39cd4175bf66)![image](https://github.com/user-attachments/assets/a0d51476-67a0-4609-bc1c-dabc8c4e1387)
+
+
+
+
+
 ## Getting Started
 To run this project, follow the steps below:
 
