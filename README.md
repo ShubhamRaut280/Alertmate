@@ -58,8 +58,5 @@ This app requires the following permissions:
 
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request for any bug fixes or new features.
-
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
    
    
